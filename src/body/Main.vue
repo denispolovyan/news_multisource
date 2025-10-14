@@ -9,7 +9,7 @@
           </div>
           <div class="news__parameters-buttons">
             <div class="news__category" v-if="QUERY">
-              <span>Сервер </span>{{ QUERY }}
+              <span>Ключові слова: </span>{{ QUERY }}
             </div>
             <div class="news__server" v-if="SERVER">
               <span>Сервер: </span>{{ SERVER }}
@@ -31,7 +31,7 @@
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name
-                  }}</a>
+                }}</a>
               </div>
             </div>
 
@@ -74,6 +74,7 @@
 import { ref, watch, defineProps } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
 import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, LANGUAGES, CATEGORIES } from "@/constants.js";
+import { searchParamsStore } from "@/stores/searchParams";
 
 // Props
 const props = defineProps({
@@ -94,11 +95,14 @@ const props = defineProps({
     default: null,
   },
 });
+
 // Константи
 const CATEGORY = ref(props.category || 'sports,Спорт');
 const QUERY = ref(props.query);
 const LANGUAGE = ref(props.language || 'uk,Українська');
 const SERVER = ref(props.server || 'NewsData');
+
+const searchParams = searchParamsStore();
 
 let detalizedLanguage = ref(LANGUAGES[0]);
 let detalizedCategory = ref(CATEGORIES[0]);
@@ -133,6 +137,10 @@ watch(
   () => props.server,
   (newVal) => {
     SERVER.value = newVal;
+    if (newVal != 'GNews') {
+      CATEGORY.value = 'sports,Спорт';
+      setActualParams();
+    }
   },
 );
 
@@ -155,9 +163,15 @@ async function getNews() {
 
   // отримання даних від сервера
   try {
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
+    let response = '';
+    let data = '';
+
+    if(!searchParams.isQueryRequired){
+      response = await fetch(url);
+      data = await response.json();
+    } else{
+      return;
+    }
 
     if (data && (data.results || data.articles)) {
       switch (SERVER.value) {
@@ -171,7 +185,6 @@ async function getNews() {
             link: article.link || ""
           }));
           break;
-
         case "GNews":
           news.value = data.articles.map(article => ({
             image_url: article.image || "",
@@ -194,8 +207,7 @@ async function getNews() {
 // функція отримання url для запиту
 function returnUrlStr(str, api) {
   let detalizedUrl = str;
-  detalizedLanguage = LANGUAGE._value.split(",");
-  detalizedCategory = CATEGORY._value.split(",");
+  setActualParams();
 
   switch (api) {
     case "NewsData":
@@ -207,13 +219,18 @@ function returnUrlStr(str, api) {
     case "GNews":
       if (detalizedLanguage[0]) detalizedUrl += `&lang=${detalizedLanguage[0]}`;
       if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
-
+      if (!QUERY.value) searchParams.setIsQueryRequired(true);
+      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
   }
-  console.log(detalizedUrl);
   return detalizedUrl;
 }
 
+// актуалізувати параметри пошуку
+function setActualParams() {
+  detalizedLanguage = LANGUAGE._value.split(",");
+  detalizedCategory = CATEGORY._value.split(",");
+}
 </script>
 
 <style scoped src="../css/main/news.css"></style>

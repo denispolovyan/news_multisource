@@ -5,7 +5,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap; /* для адаптиву */
+    flex-wrap: wrap;
+    /* для адаптиву */
     gap: 1rem;
     padding: 20px 0;
     border-bottom: 1px solid #e0e0e0;
@@ -27,7 +28,8 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    flex-wrap: wrap; /* адаптив */
+    flex-wrap: wrap;
+    /* адаптив */
   }
 
   /* Стиль для селектів і поля вводу */
@@ -57,6 +59,36 @@
     box-shadow: 0 0 0 3px rgba(75, 123, 236, 0.2);
     outline: none;
   }
+  
+  /* Помилка input  */
+  .header__input--error {
+    border-color: #e74c3c;
+    background-color: #fff5f5;
+    animation: shake 0.2s ease-in-out 2;
+  }
+
+  /* Анімація легкого "тремтіння" */
+  @keyframes shake {
+    0% {
+      transform: translateX(0);
+    }
+
+    25% {
+      transform: translateX(-2px);
+    }
+
+    50% {
+      transform: translateX(2px);
+    }
+
+    75% {
+      transform: translateX(-2px);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
 
   /* ================================
    Адаптивність
@@ -74,7 +106,7 @@
       justify-content: flex-start;
     }
 
-    .header__parameters > div {
+    .header__parameters>div {
       flex: 1 0;
       box-sizing: border-box;
     }
@@ -90,5 +122,3 @@
       min-width: 100%;
     }
   }
-
- 

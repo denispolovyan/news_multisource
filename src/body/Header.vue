@@ -30,17 +30,20 @@
         </div>
         <!-- Вибір пошуку -->
         <div>
-          <input v-model="inputValue" type="text" placeholder="Ключові слова" class="header__input" maxlength="20"
+          <input v-model="inputValue" type="text" :placeholder="searchParams.isQueryRequired ? 'Введіть ключові слова' : 'Ключові слова'"
+            :class="['header__input', { 'header__input--error': searchParams.isQueryRequired }]" maxlength="20" @focus="searchParams.setIsQueryRequired(false)"
             @input="selectInput(inputValue)" />
         </div>
+
       </div>
     </header>
   </div>
 </template>
 
 <script setup>
-import { ref, defineEmits } from "vue";
+import { ref } from "vue";
 import { CATEGORIES, LANGUAGES, SERVER } from "@/constants.js";
+import { searchParamsStore } from "@/stores/searchParams";
 
 const emit = defineEmits([
   "categorySelected",
@@ -48,6 +51,10 @@ const emit = defineEmits([
   "languageSelected",
   "serverSelected"
 ]);
+
+const searchParams = searchParamsStore();
+// const isQueryRequired = searchParams.isQueryRequired();
+
 const inputValue = ref("");
 let serverValue = ref("NewsData");
 
@@ -69,7 +76,6 @@ function selectLanguage(lang) {
 function selectServer(serv) {
   emit("serverSelected", serv);
   serverValue.value = serv;
-  console.log(serverValue)
 }
 </script>
 
