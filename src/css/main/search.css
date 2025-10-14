@@ -44,6 +44,7 @@
 
 
 .news__category,
+.news__server,
 .news__language,
 .news__search {
   background-color: #f1f3f6;
@@ -58,6 +59,7 @@
 }
 
 .news__category:hover,
+.news__server:hover,
 .news__language:hover,
 .news__search:hover {
   background-color: #e9ecf1;
@@ -85,6 +87,7 @@
     flex: 1 1 100%;
   }
   .news__category,
+  .news__server,
   .news__language {
     flex: 1 1 40%;
   }

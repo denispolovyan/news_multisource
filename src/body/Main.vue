@@ -8,10 +8,13 @@
             <button @click="getNews">Отримати новини</button>
           </div>
           <div class="news__parameters-buttons">
-            <div class="news__search" v-if="QUERY">
-              <span>Пошук за словами: </span>{{ QUERY }}
+            <div class="news__category" v-if="QUERY">
+              <span>Сервер </span>{{ QUERY }}
             </div>
-            <div class="news__category" v-if="detalizedCategory[0]">
+            <div class="news__server" v-if="SERVER">
+              <span>Сервер: </span>{{ SERVER }}
+            </div>
+            <div class="news__category" v-if="detalizedCategory[0] && SERVER == 'NewsData'">
               <span>Категорія: </span>{{ detalizedCategory[1] }}
             </div>
             <div class="news__language" v-if="detalizedLanguage[0]">
@@ -19,23 +22,16 @@
             </div>
           </div>
         </div>
-        <!-- Список новин -->
+        <!-- Список новин NEWSDATA -->
         <div v-if="news.length" class="news__list">
           <div v-for="(item, index) in news" :key="index" class="news__card">
             <!-- Зображення та джерело -->
             <div class="news__image-wrapper">
-              <img
-                :src="item.image_url || placeholder"
-                alt="Зображення новини"
-                class="news__image"
-              />
-              <div
-                class="news__source"
-                v-if="item.source_name && item.source_url"
-              >
+              <img :src="item.image_url || placeholder" alt="Зображення" class="news__image" />
+              <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name
-                }}</a>
+                  }}</a>
               </div>
             </div>
 
@@ -62,18 +58,12 @@
             </div>
 
             <!-- Посилання "Читати далі" -->
-            <a :href="item.link" target="_blank" class="news__link"
-              >Читати далі</a
-            >
+            <a :href="item.link" target="_blank" class="news__link">Читати далі</a>
           </div>
         </div>
         <!-- Повідомлення якщо новин немає -->
         <p v-else class="news__empty">
-          {{
-            returnIfParameters()
-              ? "За пошуковин запитом новин не знайдено"
-              : "Здійсніть пошук новин, щоб відобразити їх"
-          }}
+          {{ 'Новини не знайдені' }}
         </p>
       </div>
     </div>
@@ -81,113 +71,155 @@
 </template>
 
 <script setup>
-  import { ref, watch, defineProps } from "vue";
-  import placeholder from "@/images/placeholder.jpeg";
-  import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, LANGUAGES, CATEGORIES } from "@/constants.js";
+import { ref, watch, defineProps } from "vue";
+import placeholder from "@/images/placeholder.jpeg";
+import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, LANGUAGES, CATEGORIES } from "@/constants.js";
 
-  // Props
-  const props = defineProps({
-    category: {
-      type: String,
-      default: null,
-    },
-    query: {
-      type: String,
-      default: null,
-    },
-    language: {
-      type: String,
-      default: null,
-    },
-  });
+// Props
+const props = defineProps({
+  category: {
+    type: String,
+    default: null,
+  },
+  query: {
+    type: String,
+    default: null,
+  },
+  language: {
+    type: String,
+    default: null,
+  },
+  server: {
+    type: String,
+    default: null,
+  },
+});
+// Константи
+const CATEGORY = ref(props.category || 'sports,Спорт');
+const QUERY = ref(props.query);
+const LANGUAGE = ref(props.language || 'uk,Українська');
+const SERVER = ref(props.server || 'NewsData');
 
-  // Константи
-  const CATEGORY = ref(props.category);
-  const QUERY = ref(props.query);
-  const LANGUAGE = ref(props.language);
+let detalizedLanguage = ref(LANGUAGES[0]);
+let detalizedCategory = ref(CATEGORIES[0]);
 
-  let detalizedLanguage = ref(LANGUAGES[0]);
-  let detalizedCategory = ref(CATEGORIES[0]);
+const news = ref([]);
 
-  const news = ref([]);
+// Watch для props
+watch(
+  () => props.category,
+  (newVal) => {
+    CATEGORY.value = newVal;
+    detalizedCategory = CATEGORY._value.split(",");
+  },
+);
 
-  // Watch для props
-  watch(
-    () => props.category,
-    (newVal) => {
-      CATEGORY.value = newVal;
-      detalizedCategory = CATEGORY._value.split(",");
-    },
-  );
+watch(
+  () => props.query,
+  (newVal) => {
+    QUERY.value = newVal;
+  },
+);
 
-  watch(
-    () => props.query,
-    (newVal) => {
-      QUERY.value = newVal;
-    },
-  );
+watch(
+  () => props.language,
+  (newVal) => {
+    LANGUAGE.value = newVal;
+    detalizedLanguage = LANGUAGE._value.split(",");
+  },
+);
 
-  watch(
-    () => props.language,
-    (newVal) => {
-      LANGUAGE.value = newVal;
-      detalizedLanguage = LANGUAGE._value.split(",");
-    },
-  );
+watch(
+  () => props.server,
+  (newVal) => {
+    SERVER.value = newVal;
+  },
+);
 
-  // Отримання новин
-  async function getNews() {
-    const url = returnUrlStr();
+// Отримання новин GNEWS
+async function getNews() {
+  let url = "";
 
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data.results) {
-        news.value = data.results;
-      } else {
-        console.warn("Новини не знайдені або API обмежене.");
+  // отримання url для запиту
+  switch (SERVER.value) {
+    case "NewsData":
+      const newsDataUrl = `${API_BASE_URL_NEWSDATA}${API_KEY_NEWSDATA}`
+      url = returnUrlStr(newsDataUrl, 'NewsData');
+      break;
+
+    case "GNews":
+      const gnewsUrl = `${API_BASE_URL_GNEWS}${API_KEY_GNEWS}`
+      url = returnUrlStr(gnewsUrl, 'GNews');
+      break;
+  }
+
+  // отримання даних від сервера
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+
+    if (data && (data.results || data.articles)) {
+      switch (SERVER.value) {
+        case "NewsData":
+          news.value = data.results.map(article => ({
+            image_url: article.image_url || "",
+            title: article.title || "",
+            description: article.description || "",
+            source_name: article.source_name || "",
+            source_url: article.source_url || "",
+            link: article.link || ""
+          }));
+          break;
+
+        case "GNews":
+          news.value = data.articles.map(article => ({
+            image_url: article.image || "",
+            title: article.title || "",
+            description: article.description || "",
+            source_name: article.source?.name || "",
+            source_url: article.source?.url || "",
+            link: article.url || ""
+          }));
+          break;
       }
-    } catch (error) {
-      console.error("Помилка при отриманні даних:", error);
     }
+
+  } catch (error) {
+    console.error("Помилка при отриманні даних:", error);
+    return [];
   }
+}
 
-  // Отримання url
-  function returnUrlStr() {
-    detalizedLanguage = isParameterSelected(LANGUAGE);
-    detalizedCategory = isParameterSelected(CATEGORY);
+// функція отримання url для запиту
+function returnUrlStr(str, api) {
+  let detalizedUrl = str;
+  detalizedLanguage = LANGUAGE._value.split(",");
+  detalizedCategory = CATEGORY._value.split(",");
 
-    let url = `${API_BASE_URL_NEWSDATA}${API_KEY_NEWSDATA}`;
+  switch (api) {
+    case "NewsData":
+      if (detalizedCategory[0]) detalizedUrl += `&category=${detalizedCategory[0]}`;
+      if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
+      if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
+      break;
 
-    if (detalizedCategory[0]) url += `&category=${detalizedCategory[0]}`;
-    if (detalizedLanguage[0]) url += `&language=${detalizedLanguage[0]}`;
-    if (QUERY.value) url += `&q=${QUERY.value}`;
+    case "GNews":
+      if (detalizedLanguage[0]) detalizedUrl += `&lang=${detalizedLanguage[0]}`;
+      if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
 
-    return url;
+      break;
   }
+  console.log(detalizedUrl);
+  return detalizedUrl;
+}
 
-  function isParameterSelected(val) {
-    try {
-      return val._value.split(",");
-    } catch (e) {
-      return [];
-    }
-  }
-  //  Чи є параметри пошуку
-  function returnIfParameters() {
-    if (CATEGORY.value || QUERY.value) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
 </script>
 
 <style scoped src="../css/main/news.css"></style>
 <style scoped src="../css/main/search.css"></style>
-
 <style scoped>
-  .news__container {
-    margin: 20px 0px;
-  }
+.news__container {
+  margin: 20px 0px;
+}
 </style>

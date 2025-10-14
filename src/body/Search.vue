@@ -16,47 +16,47 @@
 </template>
 
 <script>
-  import { ref, watch, defineProps } from "vue";
+import { ref, watch, defineProps } from "vue";
 
- const props = defineProps({
-    category: {
-      type: Array,
-      default: null,
-    },
-    query: {
-      type: String,
-      default: null,
-    },
-    language: {
-      type: Array,
-      default: null,
-    },
-  });
+const props = defineProps({
+  category: {
+    type: Array,
+    default: null,
+  },
+  query: {
+    type: String,
+    default: null,
+  },
+  language: {
+    type: Array,
+    default: null,
+  },
+});
 
-  const CATEGORY = ref(props.category);
-  const query = ref(props.query);
-  const language = ref(props.language);
+const CATEGORY = ref(props.category);
+const query = ref(props.query);
+const language = ref(props.language);
 
-    watch(
-    () => props.category,
-    (newVal) => {
-      CATEGORY.value = newVal;
-      detalizedCategory = CATEGORY._value.split(",");
-    },
-  );
+watch(
+  () => props.category,
+  (newVal) => {
+    CATEGORY.value = newVal;
+    detalizedCategory = CATEGORY._value.split(",");
+  },
+);
 
-  watch(
-    () => props.query,
-    (newVal) => {
-      QUERY.value = newVal;
-    },
-  );
+watch(
+  () => props.query,
+  (newVal) => {
+    QUERY.value = newVal;
+  },
+);
 
-  watch(
-    () => props.language,
-    (newVal) => {
-      LANGUAGE.value = newVal;
-      detalizedLanguage = LANGUAGE._value.split(",");
-    },
-  );
+watch(
+  () => props.language,
+  (newVal) => {
+    LANGUAGE.value = newVal;
+    detalizedLanguage = LANGUAGE._value.split(",");
+  },
+);
 </script>
