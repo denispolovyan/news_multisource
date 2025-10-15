@@ -15,7 +15,7 @@
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name
-                  }}</a>
+                }}</a>
               </div>
             </div>
 
@@ -57,9 +57,8 @@
 <script setup>
 import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
-import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI  } from "@/constants.js";
+import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI } from "@/constants.js";
 import { LANGUAGES, CATEGORIES } from "@/constants.js";
-import { searchParamsStore } from "@/stores/searchParams";
 
 // Props
 const props = defineProps({
@@ -82,12 +81,10 @@ const props = defineProps({
 });
 
 // Константи
-const CATEGORY = ref(props.category || 'sports,Спорт');
+const CATEGORY = ref(props.category || 'general,Усі категорії');
 const QUERY = ref(props.query);
-const LANGUAGE = ref(props.language || 'uk,Українська');
+const LANGUAGE = ref(props.language || 'en,Англійська');
 const SERVER = ref(props.server || 'NewsData');
-
-const searchParams = searchParamsStore();
 
 let detalizedLanguage = ref(LANGUAGES[0]);
 let detalizedCategory = ref(CATEGORIES[0]);
@@ -144,6 +141,11 @@ async function getNews() {
       const gnewsUrl = `${API_BASE_URL_GNEWS}${API_KEY_GNEWS}`
       url = returnUrlStr(gnewsUrl, 'GNews');
       break;
+
+    case "NewsApi":
+      const newsApiUrl = `${API_BASE_URL_NEWSAPI}${API_KEY_NEWSAPI}`
+      url = returnUrlStr(newsApiUrl, 'NewsApi');
+      break;
   }
 
   // отримання даних від сервера
@@ -151,14 +153,12 @@ async function getNews() {
     let response = '';
     let data = '';
 
-    if (!searchParams.isQueryRequired) {
       response = await fetch(url);
       data = await response.json();
-    } else {
-      return;
-    }
+      console.log(data);
 
-    if (data && (data.results || data.articles)) {
+
+    if (data && (data.results || data.articles || data.sources)) {
       switch (SERVER.value) {
         case "NewsData":
           news.value = data.results.map(article => ({
@@ -169,6 +169,7 @@ async function getNews() {
             source_url: article.source_url || "",
             link: article.link || ""
           }));
+          console.log(news.value);
           break;
         case "GNews":
           news.value = data.articles.map(article => ({
@@ -180,6 +181,17 @@ async function getNews() {
             link: article.url || ""
           }));
           break;
+        case "NewsApi":
+          news.value = data.articles.map(article => ({
+            image_url: article.urlToImage || "",
+            title: article.title || "",
+            description: article.description || "",
+            source_name: article.source.name || "",
+            source_url: " ", // не існує, тому ставимо заглушку
+            link: article.url || ""
+          }));
+          console.log(news.value);
+          break;
       }
     }
 
@@ -189,32 +201,6 @@ async function getNews() {
   }
 }
 
-// test for NEWSAPI
-
-// async function getNews() {
-//   let url = `${API_BASE_URL_NEWSAPI}${API_KEY_NEWSAPI}&q=bitcoin`;
-//   let data = '';
-//   console.log(url);
-
-//   try {
-//       let response = await fetch(url);
-//       data = await response.json();
-
-//   } catch (error) {
-//     console.error("Помилка при отриманні даних:", error);
-//     return [];
-//   }
-//   console.log(data.articles);
-// }
-
-// content: "Ever since the crypto industry helped bankroll his presidential campaign last year, Trump and the HODLers have been on pretty good terms. The Trump family is busy launching its own crypto ventures wh… [+2568 chars]"
-// description: "A new report claims that Roger Ver may have reached a deal with the government."
-// source.name: "Gizmodo.com"
-// name: "Gizmodo.com"
-// title: "Under Trump, ‘Bitcoin Jesus’ May Be Redeemed"
-// url: "https://gizmodo.com/under-trump-bitcoin-jesus-may-be-redeemed-2000670784"
-// urlToImage: "https://gizmodo.com/app/uploads/2025/10/Roger-Ver-1200x675.jpg"
-
 // функція отримання url для запиту
 function returnUrlStr(str, api) {
   let detalizedUrl = str;
@@ -222,17 +208,26 @@ function returnUrlStr(str, api) {
 
   switch (api) {
     case "NewsData":
-      if (detalizedCategory[0]) detalizedUrl += `&category=${detalizedCategory[0]}`;
+      if (detalizedCategory[0] && detalizedCategory[0] != 'general'){
+        detalizedUrl += `&category=${detalizedCategory[0]}`;
+      }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
       if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
       break;
 
     case "GNews":
       if (detalizedLanguage[0]) detalizedUrl += `&lang=${detalizedLanguage[0]}`;
+      if (detalizedCategory[0]) detalizedUrl += `&category=${detalizedCategory[0]}`;
       if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
-      if (!QUERY.value) searchParams.setIsQueryRequired(true);
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
+
+    case "NewsApi":
+      if (detalizedCategory[0]) detalizedUrl += `&category=${detalizedCategory[0]}`;
+      if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
+      if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
+      break;
+
   }
   return detalizedUrl;
 }
@@ -242,6 +237,7 @@ function setActualParams() {
   detalizedLanguage = LANGUAGE._value.split(",");
   detalizedCategory = CATEGORY._value.split(",");
 }
+
 </script>
 
 <style scoped src="../css/main/news.css"></style>
