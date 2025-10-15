@@ -57,7 +57,8 @@
 <script setup>
 import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
-import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, LANGUAGES, CATEGORIES } from "@/constants.js";
+import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI  } from "@/constants.js";
+import { LANGUAGES, CATEGORIES } from "@/constants.js";
 import { searchParamsStore } from "@/stores/searchParams";
 
 // Props
@@ -187,6 +188,32 @@ async function getNews() {
     return [];
   }
 }
+
+// test for NEWSAPI
+
+// async function getNews() {
+//   let url = `${API_BASE_URL_NEWSAPI}${API_KEY_NEWSAPI}&q=bitcoin`;
+//   let data = '';
+//   console.log(url);
+
+//   try {
+//       let response = await fetch(url);
+//       data = await response.json();
+
+//   } catch (error) {
+//     console.error("Помилка при отриманні даних:", error);
+//     return [];
+//   }
+//   console.log(data.articles);
+// }
+
+// content: "Ever since the crypto industry helped bankroll his presidential campaign last year, Trump and the HODLers have been on pretty good terms. The Trump family is busy launching its own crypto ventures wh… [+2568 chars]"
+// description: "A new report claims that Roger Ver may have reached a deal with the government."
+// source.name: "Gizmodo.com"
+// name: "Gizmodo.com"
+// title: "Under Trump, ‘Bitcoin Jesus’ May Be Redeemed"
+// url: "https://gizmodo.com/under-trump-bitcoin-jesus-may-be-redeemed-2000670784"
+// urlToImage: "https://gizmodo.com/app/uploads/2025/10/Roger-Ver-1200x675.jpg"
 
 // функція отримання url для запиту
 function returnUrlStr(str, api) {
