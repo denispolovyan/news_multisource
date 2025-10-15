@@ -2,11 +2,11 @@
   <div class="container">
     <header class="header">
       <!-- Логотип -->
-      <div class="header__logo">Multisource</div>
+      <div class="header__logo">Feedlyx</div>
       <div class="header__parameters">
         <!-- Вибір сервера -->
         <div>
-          <select class="header__server" @click="selectServer($event.target.value)">
+          <select class="header__server header__button" @click="selectServer($event.target.value)">
             <option v-for="(serv, index) in SERVER" :key="index" :value="serv">
               {{ serv }}
             </option>
@@ -14,7 +14,7 @@
         </div>
         <!-- Вибір мови -->
         <div>
-          <select class="header__language" @click="selectLanguage($event.target.value)">
+          <select class="header__language header__button" @click="selectLanguage($event.target.value)">
             <option v-for="(lang, index) in LANGUAGES" :key="index" :value="lang">
               {{ lang[1] }}
             </option>
@@ -22,7 +22,7 @@
         </div>
         <!-- Вибір категорії -->
         <div v-if="serverValue == 'NewsData'">
-          <select class="header__category" @click="selectCategory($event.target.value)">
+          <select class="header__category header__button" @click="selectCategory($event.target.value)">
             <option v-for="(cat, index) in CATEGORIES" :key="index" :value="cat">
               {{ cat[1] }}
             </option>
@@ -31,7 +31,7 @@
         <!-- Вибір пошуку -->
         <div>
           <input v-model="inputValue" type="text" :placeholder="searchParams.isQueryRequired ? 'Введіть ключові слова' : 'Ключові слова'"
-            :class="['header__input', { 'header__input--error': searchParams.isQueryRequired }]" maxlength="20" @focus="searchParams.setIsQueryRequired(false)"
+            :class="['header__button', { 'header__input--error': searchParams.isQueryRequired }]" maxlength="20" @focus="searchParams.setIsQueryRequired(false)"
             @input="selectInput(inputValue)" />
         </div>
 

@@ -33,28 +33,18 @@
   }
 
   /* Стиль для селектів і поля вводу */
-  .header__language,
-  .header__category,
-  .header__input,
-  .header__server {
+  .header__button{
     padding: 8px 12px;
     font-size: 0.95rem;
     border: 1px solid #ccc;
     border-radius: 6px;
     background-color: #fff;
     transition: all 0.2s ease-in-out;
-    min-width: 140px;
-  }
-
-  .header__input {
-    min-width: 180px;
+    width: 100%;
   }
 
   /* Ефекти при фокусі */
-  .header__language:focus,
-  .header__category:focus,
-  .header__input:focus,
-  .header__server:focus {
+  .header__button:focus {
     border-color: #4b7bec;
     box-shadow: 0 0 0 3px rgba(75, 123, 236, 0.2);
     outline: none;
@@ -103,22 +93,20 @@
 
     .header__parameters {
       width: 100%;
-      justify-content: flex-start;
     }
 
     .header__parameters>div {
-      flex: 1 0;
+      flex: 1 1;
       box-sizing: border-box;
     }
 
     .header__logo {
       font-size: 1.6rem;
     }
+  }
 
-    .header__language,
-    .header__category,
-    .header__input,
-    .header__server {
-      min-width: 100%;
+   @media (max-width: 600px) {
+    .header__parameters>div {
+      flex: 1 1 40%;
     }
   }

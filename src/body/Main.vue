@@ -3,24 +3,8 @@
     <div class="news">
       <div class="news__container">
         <!-- Кнопка отримання новин -->
-        <div class="news__parameters">
-          <div class="news__button">
-            <button @click="getNews">Отримати новини</button>
-          </div>
-          <div class="news__parameters-buttons">
-            <div class="news__category" v-if="QUERY">
-              <span>Ключові слова: </span>{{ QUERY }}
-            </div>
-            <div class="news__server" v-if="SERVER">
-              <span>Сервер: </span>{{ SERVER }}
-            </div>
-            <div class="news__category" v-if="detalizedCategory[0] && SERVER == 'NewsData'">
-              <span>Категорія: </span>{{ detalizedCategory[1] }}
-            </div>
-            <div class="news__language" v-if="detalizedLanguage[0]">
-              <span>Мова: </span>{{ detalizedLanguage[1] }}
-            </div>
-          </div>
+        <div class="news__button">
+          <button @click="getNews">Отримати новини</button>
         </div>
         <!-- Список новин NEWSDATA -->
         <div v-if="news.length" class="news__list">
@@ -31,7 +15,7 @@
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name
-                }}</a>
+                  }}</a>
               </div>
             </div>
 
@@ -71,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps } from "vue";
+import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
 import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, LANGUAGES, CATEGORIES } from "@/constants.js";
 import { searchParamsStore } from "@/stores/searchParams";
@@ -166,10 +150,10 @@ async function getNews() {
     let response = '';
     let data = '';
 
-    if(!searchParams.isQueryRequired){
+    if (!searchParams.isQueryRequired) {
       response = await fetch(url);
       data = await response.json();
-    } else{
+    } else {
       return;
     }
 
