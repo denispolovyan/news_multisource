@@ -76,6 +76,9 @@ function sortSearchParameters(serv) {
   } else if (serv == 'GNews' && previousServerValue.value != 'GNews') {
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
     setSortedCategory();
+  } else if (serv == 'TheNewsApi' && previousServerValue.value != 'TheNewsApi') {
+    // categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
+    // setSortedCategory();
   }
 }
 

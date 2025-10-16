@@ -10,12 +10,14 @@ export const API_KEY_GNEWS = "3e41bc58bc17842da25cc3a6355c47d4";
 export const API_BASE_URL_NEWSAPI = "https://newsapi.org/v2/top-headlines?pageSize=10&apiKey=";
 export const API_KEY_NEWSAPI = "c3191c2bd3d34202b971d8e4d7e05869";
 
+export const API_BASE_URL_THENEWSAPI = "https://api.thenewsapi.com/v1/news/all?api_token=";
+export const API_KEY_THENEWSAPI = "prd6WppL3LMBYwTM2PCs0eGILiF5zPNsYyEIoG0g";
+
 // Доступні категорії
 export const CATEGORIES = [
-  ["general", "Без категорії"], // немає в NEWSDATA
+  ["general", "Всі категорії"], // немає в NEWSDATA
   ["sports", "Спорт"],
   ["politics", "Політика"], // немає в NEWSAPI та  GNEWS
-  ["technology", "Технології"],
   ["health", "Здоров'я"],
   ["science", "Наука"],
   ["business", "Бізнес"],
@@ -25,12 +27,9 @@ export const CATEGORIES = [
 export const LANGUAGES = [
   ["uk", "Українська"], // немає в NEWSAPI
   ["en", "Англійська"], 
-  ["de", "Німецька"],
 ];
 
 export const SERVER = [
-   'NewsData','GNews', 'NewsApi'
+   'NewsData','GNews', 'NewsApi', 'TheNewsApi'
 ]
 
-// gnews CATEGORIES
-// general, world, nation, business, technology, entertainment, sports, science, health.

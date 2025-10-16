@@ -15,7 +15,7 @@
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name
-                }}</a>
+                  }}</a>
               </div>
             </div>
 
@@ -57,7 +57,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
-import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI } from "@/constants.js";
+import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI } from "@/constants.js";
 import { LANGUAGES, CATEGORIES } from "@/constants.js";
 
 // Props
@@ -145,6 +145,11 @@ async function getNews() {
       const newsApiUrl = `${API_BASE_URL_NEWSAPI}${API_KEY_NEWSAPI}`
       url = returnUrlStr(newsApiUrl, 'NewsApi');
       break;
+
+    case "TheNewsApi":
+      const theNewsApiUrl = `${API_BASE_URL_THENEWSAPI}${API_KEY_THENEWSAPI}`
+      url = returnUrlStr(theNewsApiUrl, 'TheNewsApi');
+      break;
   }
 
   // отримання даних від сервера
@@ -152,11 +157,31 @@ async function getNews() {
     let response = '';
     let data = '';
 
+    if (SERVER.value == 'TheNewsApi') {
+      const [page1, page2, page3] = await Promise.all([
+        fetch(url + '&page=1'),
+        fetch(url + '&page=2'),
+        fetch(url + '&page=3'),
+      ]);
+
+      const resultPage1 = await page1.json();
+      const resultPage2 = await page2.json();
+      const resultPage3 = await page3.json();
+
+      data = [
+        ...(resultPage1.data || []),
+        ...(resultPage2.data || []),
+        ...(resultPage3.data || []),
+      ];
+    } else {
       response = await fetch(url);
       data = await response.json();
+    }
+
+    console.log(data);
 
 
-    if (data && (data.results || data.articles || data.sources)) {
+    if (data && (data.results || data.articles || data.sources || data.dat || data)) {
       switch (SERVER.value) {
         case "NewsData":
           news.value = data.results.map(article => ({
@@ -188,6 +213,16 @@ async function getNews() {
             link: article.url || ""
           }));
           break;
+        case "TheNewsApi":
+          news.value = data.map(article => ({
+            image_url: article.image_url || "",
+            title: article.title || "",
+            description: article.description || "",
+            source_name: article.source || "",
+            source_url: 'https://www.' + article.source, // не існує, тому ставимо заглушку
+            link: article.url || ""
+          }));
+          break;
       }
     }
 
@@ -204,7 +239,7 @@ function returnUrlStr(str, api) {
 
   switch (api) {
     case "NewsData":
-      if (detalizedCategory[0] && detalizedCategory[0] != 'general'){
+      if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
         detalizedUrl += `&category=${detalizedCategory[0]}`;
       }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
@@ -220,12 +255,22 @@ function returnUrlStr(str, api) {
       break;
 
     case "NewsApi":
-      if (detalizedCategory[0]) detalizedUrl += `&category=${detalizedCategory[0]}`;
+      if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
+        detalizedUrl += `&category=${detalizedCategory[0]}`;
+      }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
       if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
 
+    case "TheNewsApi":
+      if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
+        detalizedUrl += `&categories=${detalizedCategory[0]}`;
+      }
+      if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
+      if (QUERY.value) detalizedUrl += `&search=${QUERY.value}`;
+      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
+      break;
   }
   return detalizedUrl;
 }
