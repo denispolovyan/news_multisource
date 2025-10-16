@@ -53,7 +53,7 @@ function selectCategory(code) {
 /* --- Основний стиль Header --- */
 .header {
   width: 100%;
-  padding: 12px 16px;
+  /* padding: 12px 16px; */
   border-bottom: 1px solid #e5e7eb;
   font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   transition: background 0.3s, color 0.3s;

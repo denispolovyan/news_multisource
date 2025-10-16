@@ -3,20 +3,26 @@
     <div class="news__container">
         <div class="news_button">
         <button @click="getNews" class="news__button">Отримати новини</button>
-    </div>
+      </div>
 
     <div v-if="news.length" class="news__list">
       <div v-for="(item, index) in news" :key="index" class="news__card">
-        <img
-          v-if="item.image_url"
-          :src="item.image_url"
-          alt="Зображення новини"
-          class="news__image"
-        />
-        <h3 class="news__title">{{ item.title }}</h3>
-        <p class="news__description">{{ item.description }}</p>
-        <a :href="item.link" target="_blank" class="news__link">Читати далі</a>
-      </div>
+  <div class="news__image-wrapper">
+    <img
+      :src="item.image_url || placeholder"
+      alt="Зображення новини"
+      class="news__image"
+    />
+    <div class="news__source">
+      <a :href="item.source_url" target="_blank">{{ item.source_name }}</a>
+    </div>
+  </div>
+
+  <h3 class="news__title">{{ item.title }}</h3>
+  <p class="news__description">{{ item.description }}</p>
+  <a :href="item.link" target="_blank" class="news__link">Читати далі</a>
+</div>
+
     </div>
     </div>
   </div>
@@ -24,6 +30,7 @@
 
 <script setup>
 import { ref, watch, defineProps } from "vue";
+import placeholder from '@/images/placeholder.jpeg'
 
 // props 
 const props = defineProps({
@@ -73,7 +80,6 @@ async function getNews() {
 .news {
   text-align: center;
   font-family: system-ui, sans-serif;
-  padding: 20px;
 }
 
 .news__container{
@@ -88,7 +94,7 @@ async function getNews() {
   align-items: center;
   flex-wrap: wrap; /* переносить на маленьких екранах */
   gap: 12px;
-  margin-bottom: 16px;
+  margin: 16px 0px;
 }
 
 /* Кнопка */
@@ -131,7 +137,7 @@ async function getNews() {
 .news__card {
   background-color: #f9fafb;
   border-radius: 10px;
-  padding: 16px;
+  padding: 25px 10px 20px 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   text-align: left;
   display: flex;
@@ -152,7 +158,6 @@ async function getNews() {
 .news__title {
   font-size: 18px;
   font-weight: 700;
-  margin-bottom: 6px;
   color: #111827;
 }
 
@@ -179,6 +184,34 @@ async function getNews() {
   margin-top: 20px;
   color: #6b7280;
 }
+
+.news__card {
+  position: relative;
+  overflow: hidden;
+  /* твої існуючі стилі */
+}
+
+.news__source {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background: rgba(0, 0, 0, 0.5); /* напівпрозорий чорний фон */
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 10;
+}
+
+.news__source a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.news__source a:hover {
+  text-decoration: underline;
+}
+
 
 /* --- Адаптивність --- */
 @media (max-width: 1024px) {
