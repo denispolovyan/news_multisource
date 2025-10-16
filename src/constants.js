@@ -1,7 +1,5 @@
 // src/constants.js
 
-import { serverValueStore } from "@/stores/serverValue";
-
 // Константи з базовими параметрами
 export const API_BASE_URL_NEWSDATA = "https://newsdata.io/api/1/latest?apikey=";
 export const API_KEY_NEWSDATA = "pub_937f45933a914c54bd902b3244edd2b7";
@@ -14,7 +12,7 @@ export const API_KEY_NEWSAPI = "c3191c2bd3d34202b971d8e4d7e05869";
 
 // Доступні категорії
 export const CATEGORIES = [
-  ["general", "Усі категорії"], // немає в NEWSDATA
+  ["general", "Без категорії"], // немає в NEWSDATA
   ["sports", "Спорт"],
   ["politics", "Політика"], // немає в NEWSAPI та  GNEWS
   ["technology", "Технології"],

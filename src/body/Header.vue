@@ -14,7 +14,8 @@
         </div>
         <!-- Вибір мови -->
         <div>
-          <select class="header__language header__button" @click="selectLanguage($event.target.value)">
+          <select v-model="languageValue" class="header__language header__button"
+            @click="selectLanguage($event.target.value)">
             <option v-for="(lang, index) in languagesValues" :key="index" :value="lang">
               {{ lang[1] }}
             </option>
@@ -22,7 +23,8 @@
         </div>
         <!-- Вибір категорії -->
         <div>
-          <select class="header__category header__button" @click="selectCategory($event.target.value)">
+          <select v-model="categoryValue" class="header__category header__button"
+            @click="selectCategory($event.target.value)">
             <option v-for="(cat, index) in categoriesValues" :key="index" :value="cat">
               {{ cat[1] }}
             </option>
@@ -42,7 +44,6 @@
 <script setup>
 import { ref } from "vue";
 import { CATEGORIES, LANGUAGES, SERVER } from "@/constants.js";
-// import { serverValueStore } from "@/stores/serverValue";
 import { onMounted } from "vue";
 
 const emit = defineEmits([
@@ -52,24 +53,29 @@ const emit = defineEmits([
   "serverSelected"
 ]);
 
-// const SERVER_VALUE = serverValueStore();
+const categoryValue = ref(CATEGORIES[0]);
+const languageValue = ref(LANGUAGES[0]);
 const inputValue = ref("");
-let serverValue = ref("NewsData");
 
+let previousServerValue = ref("NewsData");
 let languagesValues = ref(LANGUAGES);
 let categoriesValues = ref(CATEGORIES);
 
-function actualizeSearchParameters() {
+function sortSearchParameters(serv) {
   languagesValues.value = LANGUAGES
   categoriesValues.value = CATEGORIES;
 
-  if (serverValue.value == 'NewsData') {
+  if (serv == 'NewsData' && previousServerValue.value != 'NewsData') {
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "general");
-  } else if (serverValue.value == 'NewsApi') {
+    setSortedCategory();
+  } else if (serv == 'NewsApi' && previousServerValue.value != 'NewsApi') {
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
     languagesValues.value = languagesValues.value.filter(lang => lang[0] !== "uk");
-  } else if (serverValue.value == 'GNews') {
+    setSortedCategory();
+    setSortedLanguage();
+  } else if (serv == 'GNews' && previousServerValue.value != 'GNews') {
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
+    setSortedCategory();
   }
 
 }
@@ -92,13 +98,27 @@ function selectLanguage(lang) {
 // Передаємо сервер
 function selectServer(serv) {
   emit("serverSelected", serv);
-  serverValue.value = serv;
-  actualizeSearchParameters();
+  sortSearchParameters(serv);
+  previousServerValue.value = serv;
+
+}
+
+// встановлюємо першу категорію після сортування
+function setSortedCategory() {
+  categoryValue.value = categoriesValues.value[0];
+  emit("categorySelected", Object.values(categoryValue.value).join(','));
+
+}
+
+// встановлюємо першу мову після сортування
+function setSortedLanguage() {
+  languageValue.value = languagesValues.value[0];
+  emit("languageSelected", Object.values(languageValue.value).join(','));
 }
 
 onMounted(() => {
   selectServer('NewsData');
-  actualizeSearchParameters();
+  sortSearchParameters();
 });
 </script>
 

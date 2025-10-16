@@ -120,7 +120,6 @@ watch(
   (newVal) => {
     SERVER.value = newVal;
     if (newVal != 'GNews') {
-      CATEGORY.value = 'sports,Спорт';
       setActualParams();
     }
   },
@@ -155,7 +154,6 @@ async function getNews() {
 
       response = await fetch(url);
       data = await response.json();
-      console.log(data);
 
 
     if (data && (data.results || data.articles || data.sources)) {
@@ -169,7 +167,6 @@ async function getNews() {
             source_url: article.source_url || "",
             link: article.link || ""
           }));
-          console.log(news.value);
           break;
         case "GNews":
           news.value = data.articles.map(article => ({
@@ -190,7 +187,6 @@ async function getNews() {
             source_url: " ", // не існує, тому ставимо заглушку
             link: article.url || ""
           }));
-          console.log(news.value);
           break;
       }
     }
