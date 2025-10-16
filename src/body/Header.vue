@@ -6,7 +6,7 @@
       <div class="header__parameters">
         <!-- Вибір сервера -->
         <div>
-          <select class="header__server header__button" @click="selectServer($event.target.value)">
+          <select class="header__server header__button" @change="selectServer($event.target.value)">
             <option v-for="(serv, index) in SERVER" :key="index" :value="serv">
               {{ serv }}
             </option>
@@ -15,7 +15,7 @@
         <!-- Вибір мови -->
         <div>
           <select v-model="languageValue" class="header__language header__button"
-            @click="selectLanguage($event.target.value)">
+            @change="selectLanguage($event.target.value)">
             <option v-for="(lang, index) in languagesValues" :key="index" :value="lang">
               {{ lang[1] }}
             </option>
@@ -24,7 +24,7 @@
         <!-- Вибір категорії -->
         <div>
           <select v-model="categoryValue" class="header__category header__button"
-            @click="selectCategory($event.target.value)">
+            @change="selectCategory($event.target.value)">
             <option v-for="(cat, index) in categoriesValues" :key="index" :value="cat">
               {{ cat[1] }}
             </option>
@@ -66,8 +66,8 @@ function sortSearchParameters(serv) {
   categoriesValues.value = CATEGORIES;
 
   if (serv == 'NewsData' && previousServerValue.value != 'NewsData') {
-    categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "general");
-    setSortedCategory();
+    // categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "general");
+    // setSortedCategory();
   } else if (serv == 'NewsApi' && previousServerValue.value != 'NewsApi') {
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
     languagesValues.value = languagesValues.value.filter(lang => lang[0] !== "uk");

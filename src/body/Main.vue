@@ -209,6 +209,7 @@ function returnUrlStr(str, api) {
       }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
       if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
+      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
 
     case "GNews":
