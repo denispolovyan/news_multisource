@@ -77,7 +77,6 @@ function sortSearchParameters(serv) {
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
     setSortedCategory();
   }
-
 }
 
 // Передаємо код категорії у батьківський компонент

@@ -83,7 +83,7 @@ const props = defineProps({
 // Константи
 const CATEGORY = ref(props.category || 'general,Усі категорії');
 const QUERY = ref(props.query);
-const LANGUAGE = ref(props.language || 'en,Англійська');
+const LANGUAGE = ref(props.language || 'uk,Українська');
 const SERVER = ref(props.server || 'NewsData');
 
 let detalizedLanguage = ref(LANGUAGES[0]);
