@@ -222,6 +222,7 @@ function returnUrlStr(str, api) {
       if (detalizedCategory[0]) detalizedUrl += `&category=${detalizedCategory[0]}`;
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
       if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
+      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
 
   }
