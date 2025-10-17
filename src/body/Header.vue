@@ -57,7 +57,7 @@ const categoryValue = ref(CATEGORIES[0]);
 const languageValue = ref(LANGUAGES[0]);
 const inputValue = ref("");
 
-let previousServerValue = ref("NewsData");
+let previousServerValue = ref(SERVER[0]);
 let languagesValues = ref(LANGUAGES);
 let categoriesValues = ref(CATEGORIES);
 

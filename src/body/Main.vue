@@ -15,7 +15,7 @@
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name
-                }}</a>
+                  }}</a>
               </div>
             </div>
 
@@ -47,7 +47,7 @@
         </div>
         <!-- Повідомлення якщо новин немає -->
         <p v-else class="news__empty">
-          {{ 'Новини не знайдені' }}
+          {{ isResponseEmpty ? UNSUCCESSFUL_SEARCH_MESSAGE[1] : UNSUCCESSFUL_SEARCH_MESSAGE[0] }}
         </p>
       </div>
     </div>
@@ -58,7 +58,7 @@
 import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
 import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI } from "@/constants.js";
-import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH } from "@/constants.js";
+import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE } from "@/constants.js";
 
 import { returnUrlStr, returnMappedResponse } from '@/functions.js'
 
@@ -92,6 +92,7 @@ let detalizedLanguage = ref(LANGUAGES[0]);
 let detalizedCategory = ref(CATEGORIES[0]);
 
 const news = ref([]);
+let isResponseEmpty = false;
 
 // Watch для props
 watch(
@@ -159,7 +160,6 @@ async function getNews() {
   try {
     let requests = '';
     let response = '';
-    let merged = '';
     let data = '';
 
     // робимо необхідну кількість запитів, з якої формуємо результат
@@ -185,6 +185,12 @@ async function getNews() {
     }
 
     news.value = returnMappedResponse(data[RESPONSE_DATA_PATH[SERVER.value]], SERVER.value);
+    if (news.value.length){ 
+      isResponseEmpty = false 
+    } else { 
+      isResponseEmpty = true; 
+      news.value = ''; 
+    }
   } catch (error) {
     console.error("Помилка при отриманні даних:", error);
     return [];
