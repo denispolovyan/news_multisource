@@ -1,6 +1,6 @@
 <template>
-  <Header @categorySelected="handleCategory" @querySelected="handleQuery"></Header>
-  <Main :category="selectedCategory" :query="selectedQuery"></Main>
+  <Header @categorySelected="handleCategory" @querySelected="handleQuery" @languageSelected="handleLanguage"></Header>
+  <Main :category="selectedCategory" :query="selectedQuery" :language="selectedLanguage"></Main>
 </template>
 
 <script setup>
@@ -10,7 +10,7 @@
 
   const selectedCategory = ref(null);
   const selectedQuery = ref(null);
-
+  const selectedLanguage = ref(null);
 
   function handleCategory(cat) {
     selectedCategory.value = cat;
@@ -18,5 +18,9 @@
 
   function handleQuery(q) {
     selectedQuery.value = q;
+  }
+
+  function handleLanguage(lang){
+    selectedLanguage.value = lang;
   }
 </script>

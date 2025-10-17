@@ -4,13 +4,16 @@
       <!-- Кнопка отримання новин -->
       <div class="news_button">
         <div>
-          <button @click="getNews" class="news__button">Отримати новини ШВИДКО</button>
+          <button @click="getNews" class="news__button">Отримати новини</button>
         </div>
         <div class="news__category">
-          <span>Категорія: </span>{{ CATEGORY || "не обрана" }}
+          <span>Категорія: </span>{{ detalizedCategory[1] || "-" }}
         </div>
         <div class="news__search">
-          <span>Пошук за словами: </span>{{ QUERY || "не задано" }}
+          <span>Пошук за словами: </span>{{ QUERY || "-" }}
+        </div>
+        <div class="news__language">
+          <span>Мова: </span>{{ detalizedLanguage[1] || "-" }}
         </div>
       </div>
 
@@ -78,6 +81,7 @@
 <script setup>
   import { ref, watch, defineProps } from "vue";
   import placeholder from "@/images/placeholder.jpeg";
+  import { API_KEY, API_BASE_URL, LANGUAGES, CATEGORIES } from "@/constants.js";
 
   // Props
   const props = defineProps({
@@ -89,14 +93,19 @@
       type: String,
       default: null,
     },
+    language: {
+      type: String,
+      default: null,
+    },
   });
 
   // Константи
-  const API_KEY = "pub_937f45933a914c54bd902b3244edd2b7";
-
-  const LANGUAGE = "uk";
   const CATEGORY = ref(props.category);
   const QUERY = ref(props.query);
+  const LANGUAGE = ref(props.language);
+
+  let detalizedLanguage = ref(LANGUAGES[0]);
+  let detalizedCategory = ref(CATEGORIES[0]);
 
   const news = ref([]);
 
@@ -105,6 +114,7 @@
     () => props.category,
     (newVal) => {
       CATEGORY.value = newVal;
+      detalizedCategory = CATEGORY._value.split(",");
     },
   );
 
@@ -115,10 +125,17 @@
     },
   );
 
+  watch(
+    () => props.language,
+    (newVal) => {
+      LANGUAGE.value = newVal;
+      detalizedLanguage = LANGUAGE._value.split(",");
+    },
+  );
+
   // Отримання новин
   async function getNews() {
     const url = returnUrlStr();
-    console.log(url);
 
     try {
       const response = await fetch(url);
@@ -135,11 +152,16 @@
 
   // Отримання url
   function returnUrlStr() {
-    let url = `https://newsdata.io/api/1/latest?apikey=${API_KEY}`;
+    detalizedLanguage = LANGUAGE._value.split(",");
+    detalizedCategory = CATEGORY._value.split(",");
 
-    if (CATEGORY.value) url += `&category=${CATEGORY.value}`;
-    if (LANGUAGE) url += `&language=${LANGUAGE}`;
+    let url = `${API_BASE_URL}${API_KEY}`;
+
+    if (detalizedCategory[0]) url += `&category=${detalizedCategory[0]}`;
+    if (detalizedLanguage[0]) url += `&language=${detalizedLanguage[0]}`;
     if (QUERY.value) url += `&q=${QUERY.value}`;
+
+    console.log(url);
 
     return url;
   }
@@ -199,7 +221,8 @@
 
   /* --- Категорія та пошук у стилі кнопок --- */
   .news__category,
-  .news__search {
+  .news__search,
+  .news__language {
     display: inline-flex;
     align-items: center;
     background-color: #e5e7eb;
@@ -214,7 +237,8 @@
   }
 
   .news__category span,
-  .news__search span {
+  .news__search span,
+  .news__language span {
     font-weight: 700;
     margin-right: 6px;
     color: #2563eb;
