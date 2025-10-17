@@ -1,6 +1,6 @@
 <template>
-  <Header @categorySelected="handleCategory"></Header>
-  <Main :category="selectedCategory"></Main>
+  <Header @categorySelected="handleCategory" @querySelected="handleQuery"></Header>
+  <Main :category="selectedCategory" :query="selectedQuery"></Main>
 </template>
 
 <script setup>
@@ -9,9 +9,14 @@
   import Header from "./body/Header.vue";
 
   const selectedCategory = ref(null);
+  const selectedQuery = ref(null);
 
-  function handleCategory(code) {
-    console.log("Вибрана категорія:", code);
-    selectedCategory.value = code;
+
+  function handleCategory(cat) {
+    selectedCategory.value = cat;
+  }
+
+  function handleQuery(q) {
+    selectedQuery.value = q;
   }
 </script>

@@ -30,13 +30,20 @@
           <div class="news__body">
             <h4 class="news__title">
               {{
-                (!item.title ? '' : (item.title.length > 80 ? item.title.slice(0, 80) + "..." : item.title))
+                !item.title
+                  ? ""
+                  : item.title.length > 80
+                    ? item.title.slice(0, 80) + "..."
+                    : item.title
               }}
             </h4>
             <p class="news__description">
               {{
-                (!item.description ? '' : (item.description.length > 300 ? item.description.slice(0, 300) + "..." : item.description))
-
+                !item.description
+                  ? ""
+                  : item.description.length > 300
+                    ? item.description.slice(0, 300) + "..."
+                    : item.description
               }}
             </p>
           </div>
@@ -49,7 +56,7 @@
       </div>
 
       <!-- Повідомлення якщо новин немає -->
-      <p v-else class="news__empty">Новин поки що немає.</p>
+      <p v-else class="news__empty">Новин поки що немає</p>
     </div>
   </div>
 </template>
@@ -64,12 +71,18 @@
       type: String,
       default: null,
     },
+    query: {
+      type: String,
+      default: null,
+    },
   });
 
   // Константи
   const API_KEY = "pub_937f45933a914c54bd902b3244edd2b7";
+
   const LANGUAGE = "uk";
   const CATEGORY = ref(props.category || "sports");
+  const QUERY = ref(props.query || "");
   const news = ref([]);
 
   // Watch для props.category
@@ -80,9 +93,17 @@
     },
   );
 
+  watch(
+    () => props.query,
+    (newVal) => {
+      QUERY.value = newVal;
+    },
+  );
+
   // Отримання новин
   async function getNews() {
-    const url = `https://newsdata.io/api/1/latest?apikey=${API_KEY}&language=${LANGUAGE}&category=${CATEGORY.value}`;
+    const url = returnUrlStr();
+
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -94,6 +115,17 @@
     } catch (error) {
       console.error("Помилка при отриманні даних:", error);
     }
+  }
+
+  // Отримання url
+  function returnUrlStr() {
+    let url = `https://newsdata.io/api/1/latest?apikey=${API_KEY}`;
+
+    if (CATEGORY.value) url += `&category=${CATEGORY.value}`;
+    if (LANGUAGE) url += `&language=${LANGUAGE}`;
+    if (QUERY.value) url += `&q=${QUERY.value}`;
+
+    return url;
   }
 </script>
 

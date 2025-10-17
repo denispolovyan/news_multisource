@@ -1,38 +1,48 @@
 <template>
   <header :class="['header', theme]">
     <div class="header__container">
-           <!-- Логотип -->
+      <!-- Логотип -->
       <h1 class="header__logo">Multisource News</h1>
+      <div class="header__input-wrapper">
+        <input
+          v-model="inputValue"
+          type="text"
+          placeholder="Пошуковий запит"
+          class="header__input"
+        />
+        <button @click="selectInput(inputValue)" class="header__check-btn">✔</button>
+      </div>
 
       <!-- Вибір категорії -->
       <div class="header__select-wrapper">
         <select
-             class="header__select"
+          class="header__select"
           @change="selectCategory($event.target.value)"
-              >
+        >
           <option
             v-for="(cat, index) in categories"
             :key="index"
             :value="cat[1]"
-                >
+          >
             {{ cat[0] }}
           </option>
         </select>
-                  </div>
+      </div>
 
       <!-- Кнопка перемикання теми -->
       <button @click="toggleTheme" class="header__theme-btn">
-          {{ theme === "light" ? "Night" : "Day" }}
+        {{ theme === "light" ? "Night" : "Day" }}
       </button>
-            </div>
-    </header>
+    </div>
+  </header>
 </template>
 
 <script setup>
   import { ref, defineEmits } from "vue";
 
-  const emit = defineEmits(["categorySelected"]);
+  const emit = defineEmits(["categorySelected", "querySelected"]);
   const theme = ref("light");
+  const inputValue = ref("");
 
   // Масив категорій: [Назва, Код]
   const categories = [
@@ -41,6 +51,7 @@
     ["Технології", "technology"],
   ];
 
+  // Зміна теми
   function toggleTheme() {
     theme.value = theme.value === "light" ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", theme.value);
@@ -49,6 +60,11 @@
   // Передаємо код категорії у батьківський компонент
   function selectCategory(code) {
     emit("categorySelected", code);
+  }
+
+  // Передаємо введений текст
+  function selectInput(q) {
+    emit("querySelected", q);
   }
 </script>
 
@@ -149,9 +165,51 @@
     border-color: #9ca3af;
   }
 
+  /* input  */
+
+  .header__input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+  }
+
+  .header__input {
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .header__input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  }
+
+  .header__check-btn {
+    border: none;
+    background: #2563eb;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 6px 10px;
+    transition:
+      background 0.3s,
+      transform 0.2s;
+  }
+
+  .header__check-btn:hover {
+    background: #1d4ed8;
+    transform: scale(1.05);
+  }
+
   /* --- Адаптивність --- */
   @media (max-width: 611px) {
-    .header__logo{
+    .header__logo {
       font-size: 16px;
     }
   }
