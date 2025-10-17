@@ -3,7 +3,15 @@
     <div class="news__container">
       <!-- Кнопка отримання новин -->
       <div class="news_button">
-        <button @click="getNews" class="news__button">Отримати новини</button>
+        <div>
+          <button @click="getNews" class="news__button">Отримати новини ШВИДКО</button>
+        </div>
+        <div class="news__category">
+          <span>Категорія: </span>{{ CATEGORY || "не обрана" }}
+        </div>
+        <div class="news__search">
+          <span>Пошук за словами: </span>{{ QUERY || "не задано" }}
+        </div>
       </div>
 
       <!-- Список новин -->
@@ -56,7 +64,13 @@
       </div>
 
       <!-- Повідомлення якщо новин немає -->
-      <p v-else class="news__empty">Новин поки що немає</p>
+      <p v-else class="news__empty">
+        {{
+          returnIfParameters()
+            ? "За пошуковин запитом новин не знайдено"
+            : "Здійсніть пошук новин, щоб відобразити їх"
+        }}
+      </p>
     </div>
   </div>
 </template>
@@ -81,11 +95,12 @@
   const API_KEY = "pub_937f45933a914c54bd902b3244edd2b7";
 
   const LANGUAGE = "uk";
-  const CATEGORY = ref(props.category || "sports");
-  const QUERY = ref(props.query || "");
+  const CATEGORY = ref(props.category);
+  const QUERY = ref(props.query);
+
   const news = ref([]);
 
-  // Watch для props.category
+  // Watch для props
   watch(
     () => props.category,
     (newVal) => {
@@ -103,6 +118,7 @@
   // Отримання новин
   async function getNews() {
     const url = returnUrlStr();
+    console.log(url);
 
     try {
       const response = await fetch(url);
@@ -127,12 +143,18 @@
 
     return url;
   }
+
+  //  Чи є параметри пошуку
+  function returnIfParameters() {
+    if (CATEGORY.value || QUERY.value) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 </script>
 
 <style scoped>
-  /* --------------------------------------------
-  Загальні стилі
---------------------------------------------- */
   .news {
     text-align: left;
     font-family: system-ui, sans-serif;
@@ -141,16 +163,23 @@
   .news__container {
     margin: 0 auto;
     max-width: 1200px;
-    padding: 0 10px;
   }
 
   /* --------------------------------------------
   Кнопка отримання новин
 --------------------------------------------- */
+
   .news_button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
     margin: 16px 0;
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
   }
 
+  /* --- Основна кнопка --- */
   .news__button {
     background-color: #2563eb;
     color: #ffffff;
@@ -159,14 +188,64 @@
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
-    transition:
-      background 0.2s,
-      transform 0.2s;
+    transition: all 0.25s ease;
   }
 
   .news__button:hover {
     background-color: #1e40af;
-    transform: scale(1.03);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+  }
+
+  /* --- Категорія та пошук у стилі кнопок --- */
+  .news__category,
+  .news__search {
+    display: inline-flex;
+    align-items: center;
+    background-color: #e5e7eb;
+    color: #111827;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    cursor: default;
+    user-select: none;
+  }
+
+  .news__category span,
+  .news__search span {
+    font-weight: 700;
+    margin-right: 6px;
+    color: #2563eb;
+  }
+
+  /* --- Ефект при наведенні --- */
+  .news__category:hover,
+  .news__search:hover {
+    background-color: #dbeafe;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+  }
+
+  /* --- Адаптивність --- */
+  @media (max-width: 768px) {
+    .news_button {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .news__category,
+    .news__search {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .news__button {
+      width: 100%;
+      text-align: center;
+    }
   }
 
   /* --------------------------------------------
