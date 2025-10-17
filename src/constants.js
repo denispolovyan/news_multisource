@@ -13,6 +13,22 @@ export const API_KEY_NEWSAPI = "c3191c2bd3d34202b971d8e4d7e05869";
 export const API_BASE_URL_THENEWSAPI = "https://api.thenewsapi.com/v1/news/all?api_token=";
 export const API_KEY_THENEWSAPI = "prd6WppL3LMBYwTM2PCs0eGILiF5zPNsYyEIoG0g";
 
+// NewsData - GNews - NewsApi - TheNewsApi
+export const QUANTITY_OF_REQUESTS = {
+  NewsData: 1,
+  GNews: 1,
+  NewsApi: 1,
+  TheNewsApi: 2,
+};
+
+// Шлях, де знаходяться новини при відповіді з сервера
+export const RESPONSE_DATA_PATH = {
+  NewsData: 'results',
+  GNews: 'articles',
+  NewsApi: 'articles',
+  TheNewsApi: 'data',
+};
+
 // Доступні категорії
 export const CATEGORIES = [
   ["general", "Всі категорії"], // немає в NEWSDATA
@@ -29,6 +45,7 @@ export const LANGUAGES = [
   ["en", "Англійська"], 
 ];
 
+// Сервера для запитів
 export const SERVER = [
    'NewsData','GNews', 'NewsApi', 'TheNewsApi'
 ]

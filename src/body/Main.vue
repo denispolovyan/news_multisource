@@ -15,7 +15,7 @@
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name
-                  }}</a>
+                }}</a>
               </div>
             </div>
 
@@ -58,7 +58,9 @@
 import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
 import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI } from "@/constants.js";
-import { LANGUAGES, CATEGORIES } from "@/constants.js";
+import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH } from "@/constants.js";
+
+import { returnUrlStr, returnMappedResponse } from '@/functions.js'
 
 // Props
 const props = defineProps({
@@ -128,151 +130,65 @@ watch(
 // Отримання новин GNEWS
 async function getNews() {
   let url = "";
+  setActualParams();
 
   // отримання url для запиту
   switch (SERVER.value) {
     case "NewsData":
       const newsDataUrl = `${API_BASE_URL_NEWSDATA}${API_KEY_NEWSDATA}`
-      url = returnUrlStr(newsDataUrl, 'NewsData');
+      url = returnUrlStr(newsDataUrl, 'NewsData', detalizedCategory, detalizedLanguage, QUERY);
       break;
 
     case "GNews":
       const gnewsUrl = `${API_BASE_URL_GNEWS}${API_KEY_GNEWS}`
-      url = returnUrlStr(gnewsUrl, 'GNews');
+      url = returnUrlStr(gnewsUrl, 'GNews', detalizedCategory, detalizedLanguage, QUERY);
       break;
 
     case "NewsApi":
       const newsApiUrl = `${API_BASE_URL_NEWSAPI}${API_KEY_NEWSAPI}`
-      url = returnUrlStr(newsApiUrl, 'NewsApi');
+      url = returnUrlStr(newsApiUrl, 'NewsApi', detalizedCategory, detalizedLanguage, QUERY);
       break;
 
     case "TheNewsApi":
       const theNewsApiUrl = `${API_BASE_URL_THENEWSAPI}${API_KEY_THENEWSAPI}`
-      url = returnUrlStr(theNewsApiUrl, 'TheNewsApi');
+      url = returnUrlStr(theNewsApiUrl, 'TheNewsApi', detalizedCategory, detalizedLanguage, QUERY);
       break;
   }
 
   // отримання даних від сервера
   try {
+    let requests = '';
     let response = '';
+    let merged = '';
     let data = '';
 
-    if (SERVER.value == 'TheNewsApi') {
-      const [page1, page2, page3] = await Promise.all([
-        fetch(url + '&page=1'),
-        fetch(url + '&page=2'),
-        fetch(url + '&page=3'),
-      ]);
+    // робимо необхідну кількість запитів, з якої формуємо результат
+    switch (SERVER.value) {
+      case 'TheNewsApi':
+        requests = Array.from({ length: QUANTITY_OF_REQUESTS[SERVER.value] }, (_, i) =>
+          fetch(`${url}&page=${i + 1}`)
+        );
+        response = await Promise.all((await Promise.all(requests)).map(r => r.json()));
+        data = { ...response[0], data: [...response[0].data] };
 
-      const resultPage1 = await page1.json();
-      const resultPage2 = await page2.json();
-      const resultPage3 = await page3.json();
-
-      data = [
-        ...(resultPage1.data || []),
-        ...(resultPage2.data || []),
-        ...(resultPage3.data || []),
-      ];
-    } else {
-      response = await fetch(url);
-      data = await response.json();
+        // Додаємо всі елементи data з інших об'єктів
+        for (let i = 1; i < response.length; i++) {
+          if (response[i].data && Array.isArray(response[i].data)) {
+            data.data.push(...response[i].data);
+          }
+        }
+        break;
+      default:
+        response = await fetch(url);
+        data = await response.json();
+        break;
     }
 
-    console.log(data);
-
-
-    if (data && (data.results || data.articles || data.sources || data.dat || data)) {
-      switch (SERVER.value) {
-        case "NewsData":
-          news.value = data.results.map(article => ({
-            image_url: article.image_url || "",
-            title: article.title || "",
-            description: article.description || "",
-            source_name: article.source_name || "",
-            source_url: article.source_url || "",
-            link: article.link || ""
-          }));
-          break;
-        case "GNews":
-          news.value = data.articles.map(article => ({
-            image_url: article.image || "",
-            title: article.title || "",
-            description: article.description || "",
-            source_name: article.source?.name || "",
-            source_url: article.source?.url || "",
-            link: article.url || ""
-          }));
-          break;
-        case "NewsApi":
-          news.value = data.articles.map(article => ({
-            image_url: article.urlToImage || "",
-            title: article.title || "",
-            description: article.description || "",
-            source_name: article.source.name || "",
-            source_url: " ", // не існує, тому ставимо заглушку
-            link: article.url || ""
-          }));
-          break;
-        case "TheNewsApi":
-          news.value = data.map(article => ({
-            image_url: article.image_url || "",
-            title: article.title || "",
-            description: article.description || "",
-            source_name: article.source || "",
-            source_url: 'https://www.' + article.source, // не існує, тому ставимо заглушку
-            link: article.url || ""
-          }));
-          break;
-      }
-    }
-
+    news.value = returnMappedResponse(data[RESPONSE_DATA_PATH[SERVER.value]], SERVER.value);
   } catch (error) {
     console.error("Помилка при отриманні даних:", error);
     return [];
   }
-}
-
-// функція отримання url для запиту
-function returnUrlStr(str, api) {
-  let detalizedUrl = str;
-  setActualParams();
-
-  switch (api) {
-    case "NewsData":
-      if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
-        detalizedUrl += `&category=${detalizedCategory[0]}`;
-      }
-      if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
-      if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
-      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
-      break;
-
-    case "GNews":
-      if (detalizedLanguage[0]) detalizedUrl += `&lang=${detalizedLanguage[0]}`;
-      if (detalizedCategory[0]) detalizedUrl += `&category=${detalizedCategory[0]}`;
-      if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
-      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
-      break;
-
-    case "NewsApi":
-      if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
-        detalizedUrl += `&category=${detalizedCategory[0]}`;
-      }
-      if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
-      if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
-      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
-      break;
-
-    case "TheNewsApi":
-      if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
-        detalizedUrl += `&categories=${detalizedCategory[0]}`;
-      }
-      if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
-      if (QUERY.value) detalizedUrl += `&search=${QUERY.value}`;
-      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
-      break;
-  }
-  return detalizedUrl;
 }
 
 // актуалізувати параметри пошуку
@@ -283,10 +199,11 @@ function setActualParams() {
 
 </script>
 
-<style scoped src="../css/main/news.css"></style>
-<style scoped src="../css/main/search.css"></style>
 <style scoped>
+@import "../css/main/news.css";
+@import "../css/main/search.css";
+
 .news__container {
-  margin: 20px 0px;
+  margin: 20px 0;
 }
 </style>
