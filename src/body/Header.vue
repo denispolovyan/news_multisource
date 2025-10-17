@@ -79,6 +79,12 @@ function sortSearchParameters(serv) {
   } else if (serv == 'TheNewsApi' && previousServerValue.value != 'GNews') {
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
     setSortedCategory();
+  } else if (serv == 'WorldNews' && previousServerValue.value != 'WorldNews') {
+    const excludedCategories = ["business", "science", "health"];
+    categoriesValues.value = categoriesValues.value.filter(
+      cat => !excludedCategories.includes(cat[0])
+    );
+    setSortedCategory();
   }
 }
 

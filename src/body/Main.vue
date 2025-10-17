@@ -15,7 +15,7 @@
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name
-                  }}</a>
+                }}</a>
               </div>
             </div>
 
@@ -57,7 +57,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
-import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI } from "@/constants.js";
+import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS } from "@/constants.js";
 import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE } from "@/constants.js";
 
 import { returnUrlStr, returnMappedResponse } from '@/functions.js'
@@ -144,15 +144,17 @@ async function getNews() {
       const gnewsUrl = `${API_BASE_URL_GNEWS}${API_KEY_GNEWS}`
       url = returnUrlStr(gnewsUrl, 'GNews', detalizedCategory, detalizedLanguage, QUERY);
       break;
-
     case "NewsApi":
       const newsApiUrl = `${API_BASE_URL_NEWSAPI}${API_KEY_NEWSAPI}`
       url = returnUrlStr(newsApiUrl, 'NewsApi', detalizedCategory, detalizedLanguage, QUERY);
       break;
-
     case "TheNewsApi":
       const theNewsApiUrl = `${API_BASE_URL_THENEWSAPI}${API_KEY_THENEWSAPI}`
       url = returnUrlStr(theNewsApiUrl, 'TheNewsApi', detalizedCategory, detalizedLanguage, QUERY);
+      break;
+    case "WorldNews":
+      const worldNewsApiUrl = `${API_BASE_URL_WORLDNEWS}${API_KEY_WORLDNEWS}`
+      url = returnUrlStr(worldNewsApiUrl, 'WorldNews', detalizedCategory, detalizedLanguage, QUERY);
       break;
   }
 
@@ -183,14 +185,8 @@ async function getNews() {
         data = await response.json();
         break;
     }
-
     news.value = returnMappedResponse(data[RESPONSE_DATA_PATH[SERVER.value]], SERVER.value);
-    if (news.value.length){ 
-      isResponseEmpty = false 
-    } else { 
-      isResponseEmpty = true; 
-      news.value = ''; 
-    }
+    setIsResponseEmpty();
   } catch (error) {
     console.error("Помилка при отриманні даних:", error);
     return [];
@@ -201,6 +197,16 @@ async function getNews() {
 function setActualParams() {
   detalizedLanguage = LANGUAGE._value.split(",");
   detalizedCategory = CATEGORY._value.split(",");
+}
+
+// встановлюємо чи була відповідь від сервера після запиту
+function setIsResponseEmpty() {
+  if (news.value.length) {
+    isResponseEmpty = false
+  } else {
+    isResponseEmpty = true;
+    news.value = '';
+  }
 }
 
 </script>

@@ -39,6 +39,14 @@ export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUE
       if (QUERY.value) detalizedUrl += `&search=${QUERY.value}`;
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
+    case "WorldNews":
+      if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
+        detalizedUrl += `&categories=${detalizedCategory[0]}`;
+      }
+      if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
+      if (QUERY.value) detalizedUrl += `&text=${QUERY.value}`;
+      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
+      break;
   }
   return detalizedUrl;
 }
@@ -89,7 +97,17 @@ export function returnMappedResponse(data, server){
             link: article.url || ""
           }));
           break;
-      }
+        case "WorldNews":
+          mappedResponse = data.map(article => ({
+            image_url: article.image || "",
+            title: article.title || "",
+            description: article.text || "",
+            source_name: article.author || "",
+            source_url: ' ', // не існує, тому ставимо заглушку
+            link: article.url || ""
+          }));
+          break;
+        }
 
     // прибираємо дублі
     mappedResponse = mappedResponse.filter((article, index, self) =>

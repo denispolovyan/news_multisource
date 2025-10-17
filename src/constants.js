@@ -13,6 +13,9 @@ export const API_KEY_NEWSAPI = "c3191c2bd3d34202b971d8e4d7e05869";
 export const API_BASE_URL_THENEWSAPI = "https://api.thenewsapi.com/v1/news/all?api_token=";
 export const API_KEY_THENEWSAPI = "prd6WppL3LMBYwTM2PCs0eGILiF5zPNsYyEIoG0g";
 
+export const API_BASE_URL_WORLDNEWS = "https://api.worldnewsapi.com/search-news?api-key=";
+export const API_KEY_WORLDNEWS = "0c626ef49e50477993ed9cbae4b2d1c9";
+
 // ------------------------  ПАРАМЕТРИ ПОШУКУ ----------------------
 
 // Доступні категорії
@@ -33,7 +36,7 @@ export const LANGUAGES = [
 
 // Сервера для запитів
 export const SERVER = [
-   'NewsData','GNews', 'NewsApi', 'TheNewsApi'
+   'NewsData','GNews', 'NewsApi', 'TheNewsApi', 'WorldNews'
 ]
 
 // ------------------------  ІНШІ КОНСТАНТИ ----------------------
@@ -44,6 +47,7 @@ export const QUANTITY_OF_REQUESTS = {
   GNews: 1,
   NewsApi: 1,
   TheNewsApi: 2,
+  WorldNews: 1
 };
 
 // Шлях, де знаходяться новини при відповіді з сервера
@@ -52,6 +56,7 @@ export const RESPONSE_DATA_PATH = {
   GNews: 'articles',
   NewsApi: 'articles',
   TheNewsApi: 'data',
+  WorldNews: 'news'
 };
 
 export const UNSUCCESSFUL_SEARCH_MESSAGE = ['Здійсніть пошук новин', 'За вашим запитом не знайдено новин'];
