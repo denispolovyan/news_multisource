@@ -57,7 +57,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
-import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS } from "@/constants.js";
+import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS, API_KEY_CURRENTS, API_BASE_URL_CURRENTS } from "@/constants.js";
 import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE } from "@/constants.js";
 
 import { returnUrlStr, returnMappedResponse } from '@/functions.js'
@@ -155,6 +155,10 @@ async function getNews() {
     case "WorldNews":
       const worldNewsApiUrl = `${API_BASE_URL_WORLDNEWS}${API_KEY_WORLDNEWS}`
       url = returnUrlStr(worldNewsApiUrl, 'WorldNews', detalizedCategory, detalizedLanguage, QUERY);
+      break;
+    case "Currents":
+      const CurrentsiUrl = `${API_BASE_URL_CURRENTS}${API_KEY_CURRENTS}`
+      url = returnUrlStr(CurrentsiUrl, 'Currents', detalizedCategory, detalizedLanguage, QUERY);
       break;
   }
 

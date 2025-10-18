@@ -65,26 +65,29 @@ function sortSearchParameters(serv) {
   languagesValues.value = LANGUAGES
   categoriesValues.value = CATEGORIES;
 
-  if (serv == 'NewsData' && previousServerValue.value != 'NewsData') {
+  if (serv == 'NewsData' && previousServerValue.value != 'NewsData'){
     // categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "general");
     // setSortedCategory();
-  } else if (serv == 'NewsApi' && previousServerValue.value != 'NewsApi') {
+  } else if (serv == 'NewsApi' && previousServerValue.value != 'NewsApi'){
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
     languagesValues.value = languagesValues.value.filter(lang => lang[0] !== "uk");
     setSortedCategory();
     setSortedLanguage();
-  } else if (serv == 'GNews' && previousServerValue.value != 'GNews') {
+  } else if (serv == 'GNews' && previousServerValue.value != 'GNews'){
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
     setSortedCategory();
-  } else if (serv == 'TheNewsApi' && previousServerValue.value != 'GNews') {
+  } else if (serv == 'TheNewsApi' && previousServerValue.value != 'GNews'){
     categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "politics");
     setSortedCategory();
-  } else if (serv == 'WorldNews' && previousServerValue.value != 'WorldNews') {
+  } else if (serv == 'WorldNews' && previousServerValue.value != 'WorldNews'){
     const excludedCategories = ["business", "science", "health"];
     categoriesValues.value = categoriesValues.value.filter(
       cat => !excludedCategories.includes(cat[0])
     );
     setSortedCategory();
+  } else if (serv == 'Currents' && previousServerValue.value != 'Currents'){
+    languagesValues.value = languagesValues.value.filter(lang => lang[0] !== "uk");
+    setSortedLanguage();
   }
 }
 

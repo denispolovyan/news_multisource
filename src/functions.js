@@ -47,6 +47,14 @@ export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUE
       if (QUERY.value) detalizedUrl += `&text=${QUERY.value}`;
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
+    case "Currents":
+      if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
+        detalizedUrl += `&category=${detalizedCategory[0]}`;
+      }
+      if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
+      if (QUERY.value) detalizedUrl += `&keywords=${QUERY.value}`;
+      detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
+      break;
   }
   return detalizedUrl;
 }
@@ -102,6 +110,16 @@ export function returnMappedResponse(data, server){
             image_url: article.image || "",
             title: article.title || "",
             description: article.text || "",
+            source_name: article.author || "",
+            source_url: ' ', // не існує, тому ставимо заглушку
+            link: article.url || ""
+          }));
+          break;
+        case "Currents":
+          mappedResponse = data.map(article => ({
+            image_url: (article.image == 'None') ? ' ' : article.image,
+            title: article.title || "",
+            description: article.description || "",
             source_name: article.author || "",
             source_url: ' ', // не існує, тому ставимо заглушку
             link: article.url || ""
