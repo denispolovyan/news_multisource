@@ -1,0 +1,91 @@
+/* ============================ Верхній блок із кнопками ============================ */
+.news__parameters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+
+}
+
+/* Кнопка "Отримати новини" */
+.news__button button {
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #4b7bec;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease-in-out,
+    transform 0.1s ease-in-out;
+  width: 220px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.news__button button:hover {
+  background-color: #3867d6;
+  transform: translateY(-2px);
+}
+
+/* Кнопки параметрів */
+.news__parameters-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+
+
+.news__category,
+.news__language,
+.news__search {
+  background-color: #f1f3f6;
+  border: 1px solid #dcdfe4;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #2b2b2b;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.news__category:hover,
+.news__language:hover,
+.news__search:hover {
+  background-color: #e9ecf1;
+}
+
+/* ============================ Адаптив ============================ */
+@media (max-width: 900px) {
+  .news__parameters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .news__button button {
+    width: 100%;
+  }
+
+  .news__parameters-buttons {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+  }
+
+  .news__search {
+    flex: 1 1 100%;
+  }
+  .news__category,
+  .news__language {
+    flex: 1 1 40%;
+  }
+}

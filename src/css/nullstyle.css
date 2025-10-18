@@ -1,0 +1,77 @@
+/* reset.css */
+/* Універсальне обнулення стилів для Vue-проєкту */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Видалення стандартних відступів у заголовків, списків і параграфів */
+h1, h2, h3, h4, h5, h6,
+p,
+ul, ol, li,
+figure,
+figcaption,
+blockquote,
+dl, dd {
+  margin: 0;
+  padding: 0;
+}
+
+/* Прибираємо маркери у списків */
+ul, ol {
+  list-style: none;
+}
+
+/* Забираємо стандартні стилі посилань */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Зрівнюємо шрифти для кнопок, інпутів тощо */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+/* Робимо зображення адаптивними */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Забираємо стандартну поведінку у form elements */
+button {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+/* Базові стилі для body */
+body {
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  background-color: #fff;
+  color: #222;
+}
+
+/* Забезпечує коректний рендер у сучасних браузерах */
+html:focus-within {
+  scroll-behavior: smooth;
+}

@@ -24,3 +24,17 @@
     selectedLanguage.value = lang;
   }
 </script>
+
+<style>
+.container{
+  margin: 0px auto;
+  max-width: 1200px;
+  padding: 0px 15px;
+}
+
+  @media (max-width: 768px) {
+  .container {
+    padding: 0px 10px;
+  }
+  }
+</style>
