@@ -91,7 +91,7 @@ export function returnMappedResponse(data, server){
             title: article.title || "",
             description: article.description || "",
             source_name: article.source.name || "",
-            source_url: " ", // не існує, тому ставимо заглушку
+            source_url: `${new URL(article.url).origin}/` || "",
             link: article.url || ""
           }));
           break;
@@ -101,7 +101,7 @@ export function returnMappedResponse(data, server){
             title: article.title || "",
             description: article.description || "",
             source_name: article.source || "",
-            source_url: 'https://www.' + article.source, // не існує, тому ставимо заглушку
+            source_url: `${new URL(article.url).origin}/` || "", 
             link: article.url || ""
           }));
           break;
@@ -110,20 +110,21 @@ export function returnMappedResponse(data, server){
             image_url: article.image || "",
             title: article.title || "",
             description: article.text || "",
-            source_name: article.author || "",
-            source_url: ' ', // не існує, тому ставимо заглушку
+            source_name: `${new URL(article.url).hostname.replace(/^www\./, '').replace(/\/$/, '')}` || "",
+            source_url: `${new URL(article.url).origin}/` || "",
             link: article.url || ""
           }));
           break;
         case "Currents":
           mappedResponse = data.map(article => ({
-            image_url: (article.image == 'None') ? ' ' : article.image,
+            image_url: (article.image == 'None') ? null : article.image,
             title: article.title || "",
             description: article.description || "",
-            source_name: article.author || "",
-            source_url: ' ', // не існує, тому ставимо заглушку
+            source_name: `${new URL(article.url).hostname.replace(/^www\./, '').replace(/\/$/, '')}` || "",
+            source_url: `${new URL(article.url).origin}/` || "", 
             link: article.url || ""
           }));
+          console.log(mappedResponse);
           break;
         }
 
