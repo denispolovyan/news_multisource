@@ -141,7 +141,6 @@ async function getNews() {
       const newsDataUrl = `${API_BASE_URL_NEWSDATA}${API_KEY_NEWSDATA}`
       url = returnUrlStr(newsDataUrl, 'NewsData', detalizedCategory, detalizedLanguage, QUERY);
       break;
-
     case "GNews":
       const gnewsUrl = `${API_BASE_URL_GNEWS}${API_KEY_GNEWS}`
       url = returnUrlStr(gnewsUrl, 'GNews', detalizedCategory, detalizedLanguage, QUERY);
