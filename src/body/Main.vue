@@ -11,7 +11,9 @@
           <div v-for="(item, index) in news" :key="index" class="news__card">
             <!-- Зображення та джерело -->
             <div class="news__image-wrapper">
-              <img :src="item.image_url || placeholder" alt="Зображення" class="news__image" />
+              <!-- <img :src="item.image_url || placeholder" alt="Зображення" class="news__image" /> -->
+              <img :src="item.image_url || placeholder" @error="item.image_url = placeholder" class="news__image">
+
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name

@@ -117,7 +117,7 @@ export function returnMappedResponse(data, server){
           break;
         case "Currents":
           mappedResponse = data.map(article => ({
-            image_url: (article.image == 'None') ? null : article.image,
+            image_url: article.image || "",
             title: article.title || "",
             description: article.description || "",
             source_name: `${new URL(article.url).hostname.replace(/^www\./, '').replace(/\/$/, '')}` || "",
@@ -135,5 +135,6 @@ export function returnMappedResponse(data, server){
     }
     return mappedResponse;
 }
+
 
 // --------------------- HEADER FUNCTIONS ----------------------
