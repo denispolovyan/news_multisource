@@ -4,7 +4,6 @@
 export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUERY) {
   let detalizedUrl = str;
 
-
   switch (api) {
     case "NewsData":
       if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
@@ -56,6 +55,8 @@ export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUE
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
   }
+
+
   return detalizedUrl;
 }
 
@@ -145,6 +146,40 @@ export function cutMappedResponse(data, length){
 // перевіряє, чи два параметри однакові
 export function isParametersDifferent(value, prevValue){
   return (value == prevValue) ? false : true;
+}
+
+// повертає параметри пошуку юрл строки
+export function getSavedData() {
+  const mappings = {
+    server: 'сервер',
+    query: 'запит',
+    category: 'категорія',
+    language: 'мова'
+  };
+
+  const result = Object.entries(mappings)
+    .map(([key, label]) => {
+      const value = localStorage.getItem(key);
+      if (!value || value === 'null') return null;
+      // Для category і language беремо частину після коми
+      const displayValue = (key === 'category' || key === 'language') && value.includes(',')
+        ? value.split(',')[1]
+        : value;
+      return displayValue ? `${label} - ${displayValue.toLowerCase()}` : null;
+    })
+    .filter(Boolean)  // прибираємо null
+    .join(', ');      // з'єднуємо в одну строку
+
+  return result;
+}
+
+// записує параметри пошуку в локальну пам'ять
+export function saveSearchData(cat, q, lang, serv, news){
+  localStorage.setItem('category', cat);
+  localStorage.setItem('query', q);
+  localStorage.setItem('language', lang);
+  localStorage.setItem('server', serv);
+  localStorage.setItem('articles', JSON.stringify(news));
 }
 
 

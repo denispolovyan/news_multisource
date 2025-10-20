@@ -7,7 +7,7 @@
           <button @click="getNews">Отримати новини</button>
         </div>
         <!-- Список новин NEWSDATA -->
-        <div v-if="news" class="news__list">
+        <div v-if="news?.length" class="news__list">
           <div v-for="(item, index) in news" :key="index" class="news__card">
             <!-- Зображення та джерело -->
             <div class="news__image-wrapper">
@@ -17,7 +17,7 @@
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{
                   item.source_name
-                }}</a>
+                  }}</a>
               </div>
             </div>
 
@@ -61,7 +61,7 @@ import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
 import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS, API_KEY_CURRENTS, API_BASE_URL_CURRENTS } from "@/constants.js";
 import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE, } from "@/constants.js";
-import { returnUrlStr, returnMappedResponse, isParametersDifferent } from '@/functions.js'
+import { returnUrlStr, returnMappedResponse, isParametersDifferent, getSavedData, saveSearchData } from '@/functions.js'
 import { onMounted } from "vue";
 
 import { Notyf } from 'notyf';
@@ -103,7 +103,7 @@ let detalizedCategory = ref(CATEGORIES[0]);
 
 let previousUrl = ref('');
 
-const news = ref(['']);
+const news = ref([]);
 let isResponseEmpty = false;
 
 const notyf = new Notyf({
@@ -123,6 +123,12 @@ const notyf = new Notyf({
       type: 'success',
       background: 'green',
       duration: 2500,
+      dismissible: true
+    },
+    {
+      type: 'info',
+      background: '#2196f3',
+      duration: 8000,
       dismissible: true
     }
   ]
@@ -241,7 +247,7 @@ async function getNews() {
 
     news.value = returnMappedResponse(data[RESPONSE_DATA_PATH[SERVER.value]], SERVER.value);
     news.value.length ? notyf.success('Успішний пошук') : notyf.error('Новини не знайдені');
-    localStorage.setItem('articles', JSON.stringify(news.value));
+    saveSearchData(detalizedCategory, QUERY.value, detalizedLanguage, SERVER.value, news.value);
 
     setIsResponseEmpty();
   } catch (error) {
@@ -258,7 +264,7 @@ function setActualParams() {
 
 // встановлюємо чи була відповідь від сервера після запиту
 function setIsResponseEmpty() {
-  if (news.value.length) {
+  if (news.value && news.value.length) {
     isResponseEmpty = false;
   } else {
     isResponseEmpty = true;
@@ -267,10 +273,17 @@ function setIsResponseEmpty() {
 }
 
 // ONMOUNTED
-
 onMounted(() => {
   news.value = JSON.parse(localStorage.getItem('articles'));
-  console.log(news.value);
+
+  // виводимо останній пошук
+ if (news.value && news.value.length) {
+  notyf.open({
+    type: 'info',
+    message: `Відновлено результати останнього пошуку за параметрами: ${getSavedData()}`
+  });
+}
+
 });
 </script>
 

@@ -96,21 +96,16 @@ function sortSearchParameters(serv) {
 // Передаємо код категорії у батьківський компонент
 function selectCategory(cat) {
   emit("categorySelected", cat);
-  localStorage.setItem('category', JSON.stringify(cat));
 }
 
 // Передаємо введений текст
 function selectInput(q) {
   emit("querySelected", q);
-  localStorage.setItem('query', JSON.stringify(q));
-
 }
 
 // Передаємо мову
 function selectLanguage(lang) {
   emit("languageSelected", lang);
-  localStorage.setItem('language', JSON.stringify(lang));
-
 }
 
 // Передаємо сервер
@@ -118,7 +113,6 @@ function selectServer(serv) {
   emit("serverSelected", serv);
   sortSearchParameters(serv);
   previousServerValue.value = serv;
-  localStorage.setItem('server', JSON.stringify(serv));
 }
 
 // встановлюємо першу категорію після сортування

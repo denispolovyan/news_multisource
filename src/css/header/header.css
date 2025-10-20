@@ -13,9 +13,10 @@
 
   /* Логотип */
   .header__logo {
-     display: inline-flex;
+    display: inline-flex;
     align-items: center;
-    gap: 7px; /* відступ між текстом і зображенням */
+    gap: 7px;
+    /* відступ між текстом і зображенням */
     user-select: none;
     font-size: 1.4rem;
     font-weight: 700;
@@ -125,5 +126,11 @@
   @media (max-width: 750px) {
     .header__parameters>div {
       flex: 1 1 40%;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .header {
+      padding: 10px 0;
     }
   }
