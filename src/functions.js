@@ -60,7 +60,6 @@ export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUE
 }
 
 // формує масив з відповіді від сервера для наповнювання розмітки
-
 export function returnMappedResponse(data, server){
     let mappedResponse = [];
     if (data) {
@@ -136,5 +135,20 @@ export function returnMappedResponse(data, server){
     return mappedResponse;
 }
 
+// обрізає масив новин під потрібну кількість
+export function cutMappedResponse(data, length){
+  if (!data.length) return [];
+  console.log(data, length);
+  return data.slice(0, length);
+}
+
+// перевіряє, чи два параметри однакові
+export function isParametersDifferent(value, prevValue){
+  return (value == prevValue) ? false : true;
+}
+
 
 // --------------------- HEADER FUNCTIONS ----------------------
+
+// --------------------- FOOTER FUNCTIONS ----------------------
+

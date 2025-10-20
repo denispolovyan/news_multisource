@@ -7,7 +7,7 @@
           <button @click="getNews">Отримати новини</button>
         </div>
         <!-- Список новин NEWSDATA -->
-        <div v-if="news.length" class="news__list">
+        <div v-if="news" class="news__list">
           <div v-for="(item, index) in news" :key="index" class="news__card">
             <!-- Зображення та джерело -->
             <div class="news__image-wrapper">
@@ -60,9 +60,12 @@
 import { ref, watch } from "vue";
 import placeholder from "@/images/placeholder.jpeg";
 import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS, API_KEY_CURRENTS, API_BASE_URL_CURRENTS } from "@/constants.js";
-import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE } from "@/constants.js";
+import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE, } from "@/constants.js";
+import { returnUrlStr, returnMappedResponse, isParametersDifferent } from '@/functions.js'
+import { onMounted } from "vue";
 
-import { returnUrlStr, returnMappedResponse } from '@/functions.js'
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 
 // Props
 const props = defineProps({
@@ -82,6 +85,10 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  quantity: {
+    type: String,
+    default: null,
+  },
 });
 
 // Константи
@@ -89,12 +96,38 @@ const CATEGORY = ref(props.category || 'general,Усі категорії');
 const QUERY = ref(props.query);
 const LANGUAGE = ref(props.language || 'uk,Українська');
 const SERVER = ref(props.server || 'NewsData');
+const QUANTITY = ref(props.quantity || 6);
 
 let detalizedLanguage = ref(LANGUAGES[0]);
 let detalizedCategory = ref(CATEGORIES[0]);
 
-const news = ref([]);
+let previousUrl = ref('');
+
+const news = ref(['']);
 let isResponseEmpty = false;
+
+const notyf = new Notyf({
+  duration: 2500,
+  position: {
+    x: 'right',
+    y: 'top',
+  },
+  types: [
+    {
+      type: 'error',
+      background: 'red',
+      duration: 2500,
+      dismissible: true,
+    },
+    {
+      type: 'success',
+      background: 'green',
+      duration: 2500,
+      dismissible: true
+    }
+  ]
+});
+
 
 // Watch для props
 watch(
@@ -130,6 +163,13 @@ watch(
   },
 );
 
+watch(
+  () => props.quantity,
+  (newVal) => {
+    QUANTITY.value = newVal;
+  },
+);
+
 // Отримання новин GNEWS
 async function getNews() {
   let url = "";
@@ -158,9 +198,17 @@ async function getNews() {
       url = returnUrlStr(worldNewsApiUrl, 'WorldNews', detalizedCategory, detalizedLanguage, QUERY);
       break;
     case "Currents":
-      const CurrentsiUrl = `${API_BASE_URL_CURRENTS}${API_KEY_CURRENTS}`
-      url = returnUrlStr(CurrentsiUrl, 'Currents', detalizedCategory, detalizedLanguage, QUERY);
+      const CurrentsUrl = `${API_BASE_URL_CURRENTS}${API_KEY_CURRENTS}`
+      url = returnUrlStr(CurrentsUrl, 'Currents', detalizedCategory, detalizedLanguage, QUERY);
       break;
+  }
+
+  // перевіряємо чи змінились параметри пошуку (перериваємо виконання якщо ні)
+  if (!isParametersDifferent(url, previousUrl.value)) {
+    notyf.error('Оновіть параметри');
+    return;
+  } else {
+    previousUrl.value = url;
   }
 
   // отримання даних від сервера
@@ -190,7 +238,11 @@ async function getNews() {
         data = await response.json();
         break;
     }
+
     news.value = returnMappedResponse(data[RESPONSE_DATA_PATH[SERVER.value]], SERVER.value);
+    news.value.length ? notyf.success('Успішний пошук') : notyf.error('Новини не знайдені');
+    localStorage.setItem('articles', JSON.stringify(news.value));
+
     setIsResponseEmpty();
   } catch (error) {
     console.error("Помилка при отриманні даних:", error);
@@ -207,13 +259,19 @@ function setActualParams() {
 // встановлюємо чи була відповідь від сервера після запиту
 function setIsResponseEmpty() {
   if (news.value.length) {
-    isResponseEmpty = false
+    isResponseEmpty = false;
   } else {
     isResponseEmpty = true;
-    news.value = '';
+    news.value = [];
   }
 }
 
+// ONMOUNTED
+
+onMounted(() => {
+  news.value = JSON.parse(localStorage.getItem('articles'));
+  console.log(news.value);
+});
 </script>
 
 <style scoped>

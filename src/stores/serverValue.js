@@ -1,12 +1,16 @@
 import { defineStore } from "pinia";
 
-export const serverValueStore = defineStore("serverValueStore", {
+export const searchRequestResponse = defineStore("searchRequestResponse", {
   state: () => ({
-    serverValue: '',
+    articles: '',
+    url: ''
   }),
   actions: {
-    setServerValue(val) {
-      this.serverValue = val;
+    setArticles(val) {
+      this.articles = val;
+    },
+    setUrl(val) {
+      this.url = val;
     },
   },
 });

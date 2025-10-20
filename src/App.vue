@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <Header class="header-app" @categorySelected="handleCategory" @querySelected="handleQuery" @languageSelected="handleLanguage"
-      @serverSelected="handleServer"></Header>
-    <Main class="main-app" :category="selectedCategory" :query="selectedQuery" :language="selectedLanguage" :server="selectedServer">
+      @serverSelected="handleServer" @quantitySelected="handleQuantity"></Header>
+    <Main class="main-app" :category="selectedCategory" :query="selectedQuery" :language="selectedLanguage" :server="selectedServer" :quantity="selectedQuantity">
     </Main>
     <Footer class="footer-app"></Footer>
   </div>
@@ -19,6 +19,7 @@ const selectedCategory = ref(null);
 const selectedQuery = ref(null);
 const selectedLanguage = ref(null);
 const selectedServer = ref(null);
+const selectedQuantity = ref(null);
 
 function handleCategory(cat) {
   selectedCategory.value = cat;
@@ -34,6 +35,10 @@ function handleLanguage(lang) {
 
 function handleServer(serv) {
   selectedServer.value = serv;
+}
+
+function handleQuantity(quantity){
+  selectedQuantity.value = quantity;
 }
 
 </script>

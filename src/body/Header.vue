@@ -46,24 +46,26 @@ import { ref } from "vue";
 import { CATEGORIES, LANGUAGES, SERVER } from "@/constants.js";
 import { onMounted } from "vue";
 
+
 const emit = defineEmits([
   "categorySelected",
   "querySelected",
   "languageSelected",
-  "serverSelected"
+  "serverSelected",
 ]);
 
-const categoryValue = ref(CATEGORIES[0]);
-const languageValue = ref(LANGUAGES[0]);
-const inputValue = ref("");
+let categoryValue = ref(CATEGORIES[0]);
+let languageValue = ref(LANGUAGES[0]);
+let inputValue = ref("");
 
 let previousServerValue = ref(SERVER[0]);
 let languagesValues = ref(LANGUAGES);
 let categoriesValues = ref(CATEGORIES);
 
+
 function sortSearchParameters(serv) {
   languagesValues.value = LANGUAGES
-  categoriesValues.value = CATEGORIES;
+  categoriesValues.value = CATEGORIES; 
 
   if (serv == 'NewsData' && previousServerValue.value != 'NewsData'){
     // categoriesValues.value = categoriesValues.value.filter(cat => cat[0] !== "general");
@@ -94,16 +96,21 @@ function sortSearchParameters(serv) {
 // Передаємо код категорії у батьківський компонент
 function selectCategory(cat) {
   emit("categorySelected", cat);
+  localStorage.setItem('category', JSON.stringify(cat));
 }
 
 // Передаємо введений текст
 function selectInput(q) {
   emit("querySelected", q);
+  localStorage.setItem('query', JSON.stringify(q));
+
 }
 
 // Передаємо мову
 function selectLanguage(lang) {
   emit("languageSelected", lang);
+  localStorage.setItem('language', JSON.stringify(lang));
+
 }
 
 // Передаємо сервер
@@ -111,14 +118,13 @@ function selectServer(serv) {
   emit("serverSelected", serv);
   sortSearchParameters(serv);
   previousServerValue.value = serv;
-
+  localStorage.setItem('server', JSON.stringify(serv));
 }
 
 // встановлюємо першу категорію після сортування
 function setSortedCategory() {
   categoryValue.value = categoriesValues.value[0];
   emit("categorySelected", Object.values(categoryValue.value).join(','));
-
 }
 
 // встановлюємо першу мову після сортування
@@ -128,8 +134,7 @@ function setSortedLanguage() {
 }
 
 onMounted(() => {
-  selectServer('NewsData');
-  sortSearchParameters();
+ setSortedCategory();
 });
 </script>
 

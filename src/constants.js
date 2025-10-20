@@ -7,7 +7,7 @@ export const API_KEY_NEWSDATA = "pub_937f45933a914c54bd902b3244edd2b7";
 export const API_BASE_URL_GNEWS = "https://gnews.io/api/v4/top-headlines?apikey=";
 export const API_KEY_GNEWS = "3e41bc58bc17842da25cc3a6355c47d4";
 
-export const API_BASE_URL_NEWSAPI = "https://newsapi.org/v2/top-headlines?pageSize=10&apiKey=";
+export const API_BASE_URL_NEWSAPI = "https://newsapi.org/v2/top-headlines?pageSize=15&apiKey=";
 export const API_KEY_NEWSAPI = "c3191c2bd3d34202b971d8e4d7e05869";
 
 export const API_BASE_URL_THENEWSAPI = "https://api.thenewsapi.com/v1/news/all?api_token=";
@@ -16,7 +16,7 @@ export const API_KEY_THENEWSAPI = "prd6WppL3LMBYwTM2PCs0eGILiF5zPNsYyEIoG0g";
 export const API_BASE_URL_WORLDNEWS = "https://api.worldnewsapi.com/search-news?api-key=";
 export const API_KEY_WORLDNEWS = "0c626ef49e50477993ed9cbae4b2d1c9";
 
-export const API_BASE_URL_CURRENTS = "https://api.currentsapi.services/v1/search?limit=10&page_size=10&apiKey=";
+export const API_BASE_URL_CURRENTS = "https://api.currentsapi.services/v1/search?limit=15&page_size=10&apiKey=";
 export const API_KEY_CURRENTS = "POGiwIiuYmU3WnpJjE2FElXch1hOLSWupxGxHTzm0WI9PJZt";
 
 // ------------------------  ПАРАМЕТРИ ПОШУКУ ----------------------
@@ -65,5 +65,6 @@ export const RESPONSE_DATA_PATH = {
 };
 
 export const UNSUCCESSFUL_SEARCH_MESSAGE = ['Здійсніть пошук новин', 'За вашим запитом не знайдено новин'];
+
 
 
