@@ -1,6 +1,7 @@
 /* ============================ Верхній блок із кнопками ============================ */
 .news__parameters {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;

@@ -63,6 +63,7 @@ import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GN
 import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE, } from "@/constants.js";
 import { returnUrlStr, returnMappedResponse, isParametersDifferent, getSavedData, saveSearchData } from '@/functions.js'
 import { onMounted } from "vue";
+import { themeValueStore } from '@/stores/themeValue'
 
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
@@ -96,16 +97,23 @@ const CATEGORY = ref(props.category || 'general,Усі категорії');
 const QUERY = ref(props.query);
 const LANGUAGE = ref(props.language || 'uk,Українська');
 const SERVER = ref(props.server || 'NewsData');
-const QUANTITY = ref(props.quantity || 6);
 
+// Тема
+const themeStore = themeValueStore();
+let darkTheme = ref(false);
+
+// Параметри пошуку
 let detalizedLanguage = ref(LANGUAGES[0]);
 let detalizedCategory = ref(CATEGORIES[0]);
 
+// Минулий юрл пошуку
 let previousUrl = ref('');
 
+// Набитий масив новин
 const news = ref([]);
 let isResponseEmpty = false;
 
+// Пуш повідомлення
 const notyf = new Notyf({
   duration: 2500,
   position: {
@@ -134,8 +142,14 @@ const notyf = new Notyf({
   ]
 });
 
+// Watch
+watch(
+  () => themeStore.theme,         
+  (newVal) => {      
+    darkTheme.value = newVal;
+  }
+)
 
-// Watch для props
 watch(
   () => props.category,
   (newVal) => {
@@ -166,13 +180,6 @@ watch(
     if (newVal != 'GNews') {
       setActualParams();
     }
-  },
-);
-
-watch(
-  () => props.quantity,
-  (newVal) => {
-    QUANTITY.value = newVal;
   },
 );
 
@@ -275,6 +282,7 @@ function setIsResponseEmpty() {
 // ONMOUNTED
 onMounted(() => {
   news.value = JSON.parse(localStorage.getItem('articles'));
+  darkTheme.value = localStorage.getItem('theme');
 
   // виводимо останній пошук
  if (news.value && news.value.length) {

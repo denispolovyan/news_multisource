@@ -10,32 +10,30 @@ export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUE
         detalizedUrl += `&category=${detalizedCategory[0]}`;
       }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
-      if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
+      if (QUERY.value) detalizedUrl += `&q=${QUERY.value.toLowerCase().trim().replace(/\s+/g, '')}`;
+      console.log(detalizedUrl);
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
-
     case "GNews":
       if (detalizedLanguage[0]) detalizedUrl += `&lang=${detalizedLanguage[0]}`;
       if (detalizedCategory[0]) detalizedUrl += `&category=${detalizedCategory[0]}`;
-      if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
+      if (QUERY.value) detalizedUrl += `&q=${QUERY.value.toLowerCase().trim().replace(/\s+/g, '')}`;
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
-
     case "NewsApi":
       if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
         detalizedUrl += `&category=${detalizedCategory[0]}`;
       }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
-      if (QUERY.value) detalizedUrl += `&q=${QUERY.value}`;
+      if (QUERY.value) detalizedUrl += `&q=${QUERY.value.toLowerCase().trim().replace(/\s+/g, '')}`;
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
-
     case "TheNewsApi":
       if (detalizedCategory[0] && detalizedCategory[0] != 'general') {
         detalizedUrl += `&categories=${detalizedCategory[0]}`;
       }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
-      if (QUERY.value) detalizedUrl += `&search=${QUERY.value}`;
+      if (QUERY.value) detalizedUrl += `&search=${QUERY.value.toLowerCase().trim().replace(/\s+/g, '')}`;
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
     case "WorldNews":
@@ -43,7 +41,7 @@ export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUE
         detalizedUrl += `&categories=${detalizedCategory[0]}`;
       }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
-      if (QUERY.value) detalizedUrl += `&text=${QUERY.value}`;
+      if (QUERY.value) detalizedUrl += `&text=${QUERY.value.toLowerCase().trim().replace(/\s+/g, '')}`;
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
     case "Currents":
@@ -51,7 +49,7 @@ export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUE
         detalizedUrl += `&category=${detalizedCategory[0]}`;
       }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
-      if (QUERY.value) detalizedUrl += `&keywords=${QUERY.value}`;
+      if (QUERY.value) detalizedUrl += `&keywords=${QUERY.value.toLowerCase().trim().replace(/\s+/g, '')}`;
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
   }

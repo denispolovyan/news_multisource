@@ -33,17 +33,32 @@
     </div>
 </template>
 
-<script>
-export default {
-    methods: {
-        scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth' // плавна анімація
-            });
-        }
-    }
+<script setup>
+import { ref, onMounted, watch } from "vue";
+import { themeValueStore } from '@/stores/themeValue'
+
+const themeStore = themeValueStore()
+const darkTheme = ref(false); 
+
+watch(
+  () => themeStore.theme,          
+  (newVal) => {    
+    darkTheme.value = newVal;
+  }
+)
+
+// функція скролу вгору
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth' // плавна прокрутка
+  });
 }
+
+// ONMOUNTED
+onMounted(() => {
+  darkTheme.value = localStorage.getItem('theme');
+});
 </script>
 
 <style scoped>
