@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper" :class="{ 'darkThemeFooter': darkTheme == 'true' }">
-    <footer class="footer container">
+    <footer class="container footer">
       <div class="footer__container">
         <!-- Ліва частина: пошта -->
         <div class="footer__left">
@@ -33,8 +33,6 @@
     </footer>
   </div>
 </template>
-
-
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
