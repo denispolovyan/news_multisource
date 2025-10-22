@@ -44,35 +44,5 @@ function handleQuantity(quantity){
 </script>
 
 <style>
-.container {
-  margin: 0px auto;
-  max-width: 1200px;
-  padding: 0px 15px;
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 0px 10px;
-  }
-}
-
-/* притиснути футер до низу  */
-
-.app-container{
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.header-app,
-.main-app,
-.footer-app {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.main-app {
-  flex-grow: 1;
-  /* займає весь доступний простір між Header і Footer */
-}
+@import "./css/app.css";
 </style>

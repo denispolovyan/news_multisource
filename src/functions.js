@@ -183,5 +183,11 @@ export function saveSearchData(cat, q, lang, serv, news){
 
 // --------------------- HEADER FUNCTIONS ----------------------
 
+// повертає значення інпуту строкою
+export function returnStringifiedTheme(booleanString){
+  if(booleanString === true) return'true'
+  else return 'false'
+}
+
 // --------------------- FOOTER FUNCTIONS ----------------------
 

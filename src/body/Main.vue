@@ -1,29 +1,31 @@
 <template>
-  <div class="container">
-    <div class="news">
+  <div class="wrapper" :class="{ 'darkThemeMain': darkTheme == 'true' }">
+    <div class="news container">
       <div class="news__container">
         <!-- Кнопка отримання новин -->
-        <div class="news__button">
-          <button @click="getNews">Отримати новини</button>
+        <div class="news__button" :class="{ 'darkThemeMain__button': darkTheme == 'true' }">
+          <button @click="getNews">
+            Отримати новини
+          </button>
         </div>
-        <!-- Список новин NEWSDATA -->
+
+        <!-- Список новин -->
         <div v-if="news?.length" class="news__list">
-          <div v-for="(item, index) in news" :key="index" class="news__card">
-            <!-- Зображення та джерело -->
-            <div class="news__image-wrapper">
-              <!-- <img :src="item.image_url || placeholder" alt="Зображення" class="news__image" /> -->
+          <div v-for="(item, index) in news" :key="index" class="news__card"
+            :class="{ 'darkThemeMain__card': darkTheme == 'true' }">
+
+            <!-- Зображення -->
+            <div class="news__image-wrapper" :class="{ 'darkThemeMain__image-wrapper': darkTheme == 'true' }">
               <img :src="item.image_url || placeholder" @error="item.image_url = placeholder" class="news__image">
 
               <div class="news__source" v-if="item.source_name && item.source_url">
-                <a :href="item.source_url" target="_blank">{{
-                  item.source_name
-                  }}</a>
+                <a :href="item.source_url" target="_blank">{{ item.source_name }}</a>
               </div>
             </div>
 
-            <!-- Тіло картки: заголовок + опис -->
-            <div class="news__body">
-              <h4 class="news__title">
+            <!-- Тіло картки -->
+            <div class="news__body" :class="{ 'darkThemeMain__body': darkTheme == 'true' }">
+              <h4 class="news__title" :class="{ 'darkThemeMain__title': darkTheme == 'true' }">
                 {{
                   !item.title
                     ? ""
@@ -32,7 +34,7 @@
                       : item.title
                 }}
               </h4>
-              <p class="news__description">
+              <p class="news__description" :class="{ 'darkThemeMain__description': darkTheme == 'true' }">
                 {{
                   !item.description
                     ? ""
@@ -43,18 +45,23 @@
               </p>
             </div>
 
-            <!-- Посилання "Читати далі" -->
-            <a :href="item.link" target="_blank" class="news__link">Читати далі</a>
+            <!-- Посилання -->
+            <a :href="item.link" target="_blank" class="news__link"
+              :class="{ 'darkThemeMain__link': darkTheme == 'true' }">
+              Читати далі
+            </a>
           </div>
         </div>
-        <!-- Повідомлення якщо новин немає -->
-        <p v-else class="news__empty">
+
+        <!-- Якщо новин немає -->
+        <p v-else class="news__empty" :class="{ 'darkThemeMain__empty': darkTheme == 'true' }">
           {{ isResponseEmpty ? UNSUCCESSFUL_SEARCH_MESSAGE[1] : UNSUCCESSFUL_SEARCH_MESSAGE[0] }}
         </p>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, watch } from "vue";
@@ -144,8 +151,8 @@ const notyf = new Notyf({
 
 // Watch
 watch(
-  () => themeStore.theme,         
-  (newVal) => {      
+  () => themeStore.theme,
+  (newVal) => {
     darkTheme.value = newVal;
   }
 )
@@ -285,12 +292,12 @@ onMounted(() => {
   darkTheme.value = localStorage.getItem('theme');
 
   // виводимо останній пошук
- if (news.value && news.value.length) {
-  notyf.open({
-    type: 'info',
-    message: `Відновлено результати останнього пошуку за параметрами: ${getSavedData()}`
-  });
-}
+  if (news.value && news.value.length) {
+    notyf.open({
+      type: 'info',
+      message: `Відновлено результати останнього пошуку за параметрами: ${getSavedData()}`
+    });
+  }
 
 });
 </script>
@@ -298,8 +305,9 @@ onMounted(() => {
 <style scoped>
 @import "../css/main/news.css";
 @import "../css/main/search.css";
+@import "../css/dark.css";
 
 .news__container {
-  margin: 20px 0;
+  margin: 10px 0;
 }
 </style>

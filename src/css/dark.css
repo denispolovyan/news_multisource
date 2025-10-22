@@ -1,0 +1,187 @@
+/* ------------------------------------------ HEADER ------------------------------------------ */
+
+/* Основний контейнер хедера */
+.darkThemeHeader {
+  background-color: #111;
+  color: #eaeaea;
+  border-bottom: 1px solid #2a2a2a;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* Логотип */
+.darkThemeHeader__logo {
+  color: #f5f5f5;
+}
+
+.darkThemeHeader__logo img {
+  filter: brightness(0.9) invert(0.9);
+}
+
+/* Кнопки (select, input тощо) */
+.darkThemeHeader .header__button {
+  background-color: #1b1b1b;
+  border: 1px solid #333;
+  color: #eaeaea;
+  transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
+.darkThemeHeader .header__button:focus {
+  border-color: #4b7bec;
+  box-shadow: 0 0 0 3px rgba(75, 123, 236, 0.25);
+}
+
+/* Перемикач теми */
+.darkThemeHeader__button .theme-toggle-label {
+  background: #2b2b2b;
+}
+
+.darkThemeHeader__button .toggle-slider {
+  background: #eaeaea;
+}
+
+.darkThemeHeader__button .theme-checkbox:checked + .theme-toggle-label {
+  background: #555;
+}
+
+.darkThemeHeader__button .theme-checkbox:checked + .theme-toggle-label .toggle-slider {
+  background: #111;
+}
+
+/* Іконки сонця/місяця */
+.darkThemeHeader__button .icon.sun {
+  fill: #999;
+}
+
+.darkThemeHeader__button .icon.moon {
+  fill: #ffcc00;
+}
+
+/* Бургер */
+.darkThemeHeader__burger .burger span {
+  background-color: #eaeaea;
+}
+
+.darkThemeHeader__burger .burger.active span {
+  background-color: #ffcc00;
+}
+
+/* Hover ефекти */
+.darkThemeHeader .header__button:hover {
+  background-color: #222;
+}
+
+.darkThemeHeader__logo:hover img {
+  transform: rotate(-10deg) scale(1.1);
+  filter: brightness(1.1);
+}
+
+/* ------------------------------------------ MAIN ------------------------------------------ */
+
+.darkThemeMain {
+  background-color: #1e1e1e;
+  color: #e8e8e8;
+}
+
+/* Картка новини */
+.darkThemeMain__card {
+  background: #2a2a2a;
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.08);
+}
+
+.darkThemeMain__card:hover {
+  box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+}
+
+/* Тіло картки */
+.darkThemeMain__body {
+  border-bottom: 1px solid #444;
+}
+
+.darkThemeMain__title {
+  color: #ffffff;
+}
+
+.darkThemeMain__description {
+  color: #cccccc;
+}
+
+/* Кнопка "Отримати новини" */
+.darkThemeMain__button {
+  background-color: #4a4aff;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(90, 90, 255, 0.4);
+}
+
+.darkThemeMain__button button{
+  background-color: #4a4aff;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(90, 90, 255, 0.4);
+}
+
+.darkThemeMain__button:hover {
+  background-color: #3737e6;
+}
+
+.darkThemeMain__button button:hover {
+  background-color: #3737e6;
+}
+
+/* Посилання "Читати далі" */
+.darkThemeMain__link {
+  background: #5050ff;
+  color: #fff;
+  box-shadow: 0 3px 6px rgba(80, 80, 255, 0.4);
+}
+
+.darkThemeMain__link:hover {
+  background: #3838e6;
+}
+
+/* Зображення */
+.darkThemeMain__image-wrapper {
+  background-color: #3a3a3a;
+}
+
+/* Повідомлення "немає новин" */
+.darkThemeMain__empty {
+  color: #bbbbbb;
+}
+
+/* ------------------------------------------ FOOTER ------------------------------------------ */
+
+.darkThemeFooter {
+  background-color: #111;
+  color: #eaeaea;
+  border-top: 1px solid #333;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.darkThemeFooter__button {
+  background-color: #222;
+  border: 1px solid #333;
+  border-radius: 8px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.darkThemeFooter__button:hover {
+  background-color: #2f2f2f;
+  transform: translateY(-6px);
+}
+
+.darkThemeFooter__button_mail {
+  border: 1px solid #333;
+  color: #eaeaea;
+  background-color: #222;
+  transition: background 0.3s ease, transform 0.2s ease, color 0.3s ease;
+}
+
+.darkThemeFooter__button_mail:hover {
+  background-color: #2d2d2d;
+  color: #fff;
+  transform: translateY(-6px);
+}
+
+.darkThemeFooter .footer__icon {
+  filter: brightness(0.9) invert(0.9);
+}
+
