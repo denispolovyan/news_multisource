@@ -1,26 +1,29 @@
 <template>
-  <div class="app-container">
+<div class="app-container">
     <Header class="header-app" @categorySelected="handleCategory" @querySelected="handleQuery" @languageSelected="handleLanguage"
-      @serverSelected="handleServer" @quantitySelected="handleQuantity"></Header>
-    <Main class="main-app" :category="selectedCategory" :query="selectedQuery" :language="selectedLanguage" :server="selectedServer" :quantity="selectedQuantity">
+      @serverSelected="handleServer"></Header>
+    <Main class="main-app" :category="selectedCategory" :query="selectedQuery" :language="selectedLanguage" :server="selectedServer">
     </Main>
     <Footer class="footer-app"></Footer>
   </div>
 </template>
 
 <script setup>
+// base
 import { ref } from "vue";
+
+// components
 import Main from "./body/Main.vue";
 import Header from "./body/Header.vue";
 import Footer from "./body/Footer.vue";
 
-
+// search parameters
 const selectedCategory = ref(null);
 const selectedQuery = ref(null);
 const selectedLanguage = ref(null);
 const selectedServer = ref(null);
-const selectedQuantity = ref(null);
 
+// functions
 function handleCategory(cat) {
   selectedCategory.value = cat;
 }
@@ -36,11 +39,6 @@ function handleLanguage(lang) {
 function handleServer(serv) {
   selectedServer.value = serv;
 }
-
-function handleQuantity(quantity){
-  selectedQuantity.value = quantity;
-}
-
 </script>
 
 <style>

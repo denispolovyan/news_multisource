@@ -38,7 +38,7 @@
 import { ref, onMounted, watch } from "vue";
 import { themeValueStore } from '@/stores/themeValue'
 
-const themeStore = themeValueStore()
+const themeStore = themeValueStore();
 const darkTheme = ref();
 
 watch(

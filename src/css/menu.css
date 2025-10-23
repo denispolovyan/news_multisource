@@ -1,0 +1,148 @@
+/* ----------------------------- */
+/*        ОСНОВНА ОБГОРТКА       */
+/* ----------------------------- */
+
+.menu-overlay {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 15, 15, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  animation: fadeIn 0.25s ease forwards;
+  overflow: hidden;
+}
+
+/* ----------------------------- */
+/*        ПАНЕЛЬ МЕНЮ            */
+/* ----------------------------- */
+
+.menu-panel {
+  background: #1b1b1b;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: slideDown 0.35s ease forwards;
+  max-width: 90%;
+  width: 400px;
+  margin-top: 80px; /* 👈 додає відступ згори */
+}
+
+
+/* ----------------------------- */
+/*        ПОСИЛАННЯ              */
+/* ----------------------------- */
+
+.menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  text-align: center;
+  width: 100%;
+}
+
+.menu-links a {
+  color: #eaeaea;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 10px 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.menu-links a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #4da3ff;
+  transform: translateY(-2px);
+}
+
+.menu-links a:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ----------------------------- */
+/*        АДАПТИВНІСТЬ           */
+/* ----------------------------- */
+
+@media (max-width: 600px) {
+  .menu-panel {
+    width: 85%;
+    padding: 30px 25px;
+  }
+
+  .menu-links a {
+    font-size: 1rem;
+  }
+}
+
+/* ----------------------------- */
+/*        АНІМАЦІЇ               */
+/* ----------------------------- */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ----------------------------- */
+/*      ТЕМНА / СВІТЛА ТЕМА      */
+/* ----------------------------- */
+
+.darkThemeHeader .menu-panel {
+  background: #121212;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.darkThemeHeader .menu-links a {
+  color: #f5f5f5;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.darkThemeHeader .menu-links a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #58a6ff;
+}
+
+/* Світла тема (за бажанням) */
+.lightThemeHeader .menu-panel {
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.lightThemeHeader .menu-links a {
+  color: #222;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.lightThemeHeader .menu-links a:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #0078d7;
+}

@@ -1,5 +1,6 @@
 <template>
   <div class="wrapper" :class="{ 'darkThemeHeader': darkTheme == 'true' }" id="header-container">
+    <Menu v-if="isMenuOpen"></Menu>
     <header class="header container">
       <!-- Верхня частина -->
       <div class="header__up">
@@ -36,8 +37,8 @@
           </div>
 
           <!-- Бургер -->
-          <div :class="{ 'darkThemeHeader__burger': darkTheme == 'true' }">
-            <div class="burger" @click="isMenuOpen = !isMenuOpen" :class="[{ active: isMenuOpen }]">
+          <div :class="{ 'darkThemeHeader__burger': darkTheme == 'true' }" @click="openMenu()">
+            <div class="burger" :class="[{ active: isMenuOpen }]">
               <span></span>
               <span></span>
               <span></span>
@@ -95,15 +96,24 @@
   </div>
 </template>
 
-
 <script setup>
+// base
 import { ref, onMounted, watch } from "vue";
+
+// constants
 import { CATEGORIES, LANGUAGES, SERVER } from "@/constants.js";
+
+// functions
 import { returnStringifiedTheme } from "@/functions.js";
 
+//components
+import Menu from "./Menu.vue";
+
+// stores
 import { themeValueStore } from '@/stores/themeValue';
+import { menuStateStore } from '@/stores/menuState';
 
-
+// emits
 const emit = defineEmits([
   "categorySelected",
   "querySelected",
@@ -111,10 +121,16 @@ const emit = defineEmits([
   "serverSelected",
 ]);
 
-const themeStore = themeValueStore()
-const isMenuOpen = ref(false);
-const darkThemeSwitch = ref();
+// store consts
+const themeStore = themeValueStore();
+const menuStore = menuStateStore();
+
+// consts 
 const darkTheme = ref();
+const darkThemeSwitch = ref();
+
+const isMenuOpen = ref(false);
+
 
 let categoryValue = ref(CATEGORIES[0]);
 let languageValue = ref(LANGUAGES[0]);
@@ -124,7 +140,7 @@ let previousServerValue = ref(SERVER[0]);
 let languagesValues = ref(LANGUAGES);
 let categoriesValues = ref(CATEGORIES);
 
-// Слідкуємо за значенням теми
+// watch
 watch(
   () => themeStore.theme,
   (newVal) => {
@@ -138,7 +154,7 @@ watch(
   }
 )
 
-
+// functions
 function sortSearchParameters(serv) {
   languagesValues.value = LANGUAGES
   categoriesValues.value = CATEGORIES;
@@ -209,7 +225,13 @@ function changeTheme(theme) {
   themeStore.theme = returnStringifiedTheme(theme);
 }
 
+// Відкриваємо навігаційне меню
+function openMenu(){
+  isMenuOpen.value = !isMenuOpen.value;
+  menuStore.setMenuState(isMenuOpen.value);
+}
 
+// onMounted
 onMounted(() => {
   setSortedCategory();
 
@@ -221,6 +243,8 @@ onMounted(() => {
     darkThemeSwitch.value = savedTheme;
     darkTheme.value = savedTheme;
   }
+
+  menuStore.setMenuState(false);
 });
 </script>
 

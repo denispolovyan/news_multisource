@@ -116,9 +116,13 @@
 @media (max-width: 600px) {
   .footer__container {
     padding: 10px 0;
-    gap: 10px;
+    gap: 5px;
   }
   .footer__right {
-    gap: 8px;
+    gap: 5px;
   }
+
+  .footer-mail {
+  padding: 9px 7px;
+}
 }
