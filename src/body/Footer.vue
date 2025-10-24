@@ -35,9 +35,13 @@
 </template>
 
 <script setup>
+// 
 import { ref, onMounted, watch } from "vue";
 import { themeValueStore } from '@/stores/themeValue'
+import { scrollToTop } from '@/functions.js'
 
+
+// theme const
 const themeStore = themeValueStore();
 const darkTheme = ref();
 
@@ -47,14 +51,6 @@ watch(
     darkTheme.value = newVal;
   }
 )
-
-// функція скролу вгору
-function scrollToTop() {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth' // плавна прокрутка
-  });
-}
 
 // ONMOUNTED
 onMounted(() => {

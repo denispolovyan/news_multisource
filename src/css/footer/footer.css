@@ -102,11 +102,7 @@
 }
 
 .footer__top img {
-  filter: brightness(0.8);
-}
-
-.footer__top:hover img {
-  filter: brightness(1.1);
+  filter: brightness(0.9);
 }
 
 /* ================================

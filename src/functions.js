@@ -191,3 +191,9 @@ export function returnStringifiedTheme(booleanString){
 
 // --------------------- FOOTER FUNCTIONS ----------------------
 
+export function scrollToTop() {
+  window.scrollTo({
+    top: 20,
+    behavior: 'smooth' // плавна прокрутка
+  });
+}

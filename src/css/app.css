@@ -16,7 +16,11 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow: visible;
+}
+
+.app-container__overflow{
+  overflow: hidden;
 }
 
 .header-app,

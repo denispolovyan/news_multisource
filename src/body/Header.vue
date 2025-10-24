@@ -1,6 +1,5 @@
 <template>
   <div class="wrapper" :class="{ 'darkThemeHeader': darkTheme == 'true' }" id="header-container">
-    <Menu v-if="isMenuOpen"></Menu>
     <header class="header container">
       <!-- Верхня частина -->
       <div class="header__up">
@@ -14,19 +13,13 @@
         <div class="header__up_right">
           <!-- Перемикач теми -->
           <div class="theme-toggle" :class="{ 'darkThemeHeader__button': darkTheme == 'true' }">
-            <input
-              type="checkbox"
-              id="theme-switch"
-              class="theme-checkbox"
-              v-model="darkThemeSwitch"
-              @click="changeTheme($event.target.checked)"
-            />
+            <input type="checkbox" id="theme-switch" class="theme-checkbox" v-model="darkThemeSwitch"
+              @click="changeTheme($event.target.checked)" />
             <label for="theme-switch" class="theme-toggle-label">
               <div class="theme-icons">
                 <svg class="icon sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <path
-                    d="M12 18a6 6 0 100-12 6 6 0 000 12zM12 1v2m0 18v2m11-11h-2M3 12H1m16.95 7.07l1.41 1.41M4.64 4.64L3.22 3.22m0 17.56l1.42-1.42M19.36 4.64l1.42-1.42"
-                  />
+                    d="M12 18a6 6 0 100-12 6 6 0 000 12zM12 1v2m0 18v2m11-11h-2M3 12H1m16.95 7.07l1.41 1.41M4.64 4.64L3.22 3.22m0 17.56l1.42-1.42M19.36 4.64l1.42-1.42" />
                 </svg>
                 <svg class="icon moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
@@ -58,11 +51,8 @@
         </div>
 
         <div>
-          <select
-            v-model="languageValue"
-            class="header__language header__button"
-            @change="selectLanguage($event.target.value)"
-          >
+          <select v-model="languageValue" class="header__language header__button"
+            @change="selectLanguage($event.target.value)">
             <option v-for="(lang, index) in languagesValues" :key="index" :value="lang">
               {{ lang[1] }}
             </option>
@@ -70,11 +60,8 @@
         </div>
 
         <div>
-          <select
-            v-model="categoryValue"
-            class="header__category header__button"
-            @change="selectCategory($event.target.value)"
-          >
+          <select v-model="categoryValue" class="header__category header__button"
+            @change="selectCategory($event.target.value)">
             <option v-for="(cat, index) in categoriesValues" :key="index" :value="cat">
               {{ cat[1] }}
             </option>
@@ -82,14 +69,8 @@
         </div>
 
         <div>
-          <input
-            v-model="inputValue"
-            type="text"
-            placeholder="Ключові слова"
-            class="header__button"
-            maxlength="20"
-            @input="selectInput(inputValue)"
-          />
+          <input v-model="inputValue" type="text" placeholder="Ключові слова" class="header__button" maxlength="20"
+            @input="selectInput(inputValue)" />
         </div>
       </div>
     </header>
@@ -106,12 +87,8 @@ import { CATEGORIES, LANGUAGES, SERVER } from "@/constants.js";
 // functions
 import { returnStringifiedTheme } from "@/functions.js";
 
-//components
-import Menu from "./Menu.vue";
-
 // stores
 import { themeValueStore } from '@/stores/themeValue';
-import { menuStateStore } from '@/stores/menuState';
 
 // emits
 const emit = defineEmits([
@@ -119,18 +96,15 @@ const emit = defineEmits([
   "querySelected",
   "languageSelected",
   "serverSelected",
+  "menuHandled"
 ]);
 
 // store consts
 const themeStore = themeValueStore();
-const menuStore = menuStateStore();
 
 // consts 
 const darkTheme = ref();
 const darkThemeSwitch = ref();
-
-const isMenuOpen = ref(false);
-
 
 let categoryValue = ref(CATEGORIES[0]);
 let languageValue = ref(LANGUAGES[0]);
@@ -140,17 +114,15 @@ let previousServerValue = ref(SERVER[0]);
 let languagesValues = ref(LANGUAGES);
 let categoriesValues = ref(CATEGORIES);
 
+let isMenuOpen = ref(false);
+
 // watch
 watch(
   () => themeStore.theme,
   (newVal) => {
     darkThemeSwitch.value = newVal;
-  }
-)
-watch(
-  () => themeStore.theme,
-  (newVal) => {
     darkTheme.value = newVal;
+
   }
 )
 
@@ -207,6 +179,12 @@ function selectServer(serv) {
   previousServerValue.value = serv;
 }
 
+// Передаємо стан меню
+function openMenu() {
+  isMenuOpen.value = !isMenuOpen.value;
+  emit("menuHandled", isMenuOpen.value);
+}
+
 // встановлюємо першу категорію після сортування
 function setSortedCategory() {
   categoryValue.value = categoriesValues.value[0];
@@ -225,12 +203,6 @@ function changeTheme(theme) {
   themeStore.theme = returnStringifiedTheme(theme);
 }
 
-// Відкриваємо навігаційне меню
-function openMenu(){
-  isMenuOpen.value = !isMenuOpen.value;
-  menuStore.setMenuState(isMenuOpen.value);
-}
-
 // onMounted
 onMounted(() => {
   setSortedCategory();
@@ -243,8 +215,6 @@ onMounted(() => {
     darkThemeSwitch.value = savedTheme;
     darkTheme.value = savedTheme;
   }
-
-  menuStore.setMenuState(false);
 });
 </script>
 

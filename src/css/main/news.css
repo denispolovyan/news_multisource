@@ -104,8 +104,8 @@
   transition: color 0.2s ease;
 }
 
-.news__card:hover .news__title {
-  color: #005bb5;
+.news__title:hover {
+  color: #530606;
 }
 
 .news__description {
@@ -139,7 +139,7 @@
 
 /* Ефект при наведенні */
 .news__link:hover {
-  background: #005bb5;
+  background: #3867d6;
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 91, 181, 0.35);
 }

@@ -92,28 +92,18 @@
   color: #ffffff;
 }
 
-.news__card:hover .news__title {
-  color: #e9e9e9;
+.darkThemeMain__title:hover {
+  color: #848383;
 }
 
 .darkThemeMain__description {
   color: #cccccc;
 }
 
-.darkThemeMain__button {
-  background-color: #4a4aff;
-  color: #fff;
-  box-shadow: 0 2px 5px rgba(90, 90, 255, 0.4);
-}
-
 .darkThemeMain__button button{
   background-color: #4a4aff;
   color: #fff;
   box-shadow: 0 2px 5px rgba(90, 90, 255, 0.4);
-}
-
-.darkThemeMain__button:hover {
-  background-color: #3737e6;
 }
 
 .darkThemeMain__button button:hover {
@@ -175,4 +165,6 @@
 .darkThemeFooter .footer__icon {
   filter: brightness(0.9) invert(0.9);
 }
-
+.footer__icon:hover {
+color: #fff;
+}
