@@ -43,7 +43,7 @@
       <!-- Нижня частина -->
       <div class="header__down">
         <div>
-          <select class="header__server header__button" @change="selectServer($event.target.value)">
+          <select tabindex="1" class="header__server header__button" @change="selectServer($event.target.value)">
             <option v-for="(serv, index) in SERVER" :key="index" :value="serv">
               {{ serv }}
             </option>
@@ -51,7 +51,7 @@
         </div>
 
         <div>
-          <select v-model="languageValue" class="header__language header__button"
+          <select tabindex="2" v-model="languageValue" class="header__language header__button"
             @change="selectLanguage($event.target.value)">
             <option v-for="(lang, index) in languagesValues" :key="index" :value="lang">
               {{ lang[1] }}
@@ -60,7 +60,7 @@
         </div>
 
         <div>
-          <select v-model="categoryValue" class="header__category header__button"
+          <select tabindex="3" v-model="categoryValue" class="header__category header__button"
             @change="selectCategory($event.target.value)">
             <option v-for="(cat, index) in categoriesValues" :key="index" :value="cat">
               {{ cat[1] }}
@@ -69,7 +69,7 @@
         </div>
 
         <div>
-          <input v-model="inputValue" type="text" placeholder="Ключові слова" class="header__button" maxlength="20"
+          <input tabindex="4" v-model="inputValue" type="text" placeholder="Ключові слова" class="header__button" maxlength="20"
             @input="selectInput(inputValue)" />
         </div>
       </div>

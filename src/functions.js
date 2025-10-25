@@ -11,7 +11,6 @@ export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUE
       }
       if (detalizedLanguage[0]) detalizedUrl += `&language=${detalizedLanguage[0]}`;
       if (QUERY.value) detalizedUrl += `&q=${QUERY.value.toLowerCase().trim().replace(/\s+/g, '')}`;
-      console.log(detalizedUrl);
       detalizedUrl = `https://corsproxy.io/?${encodeURIComponent(detalizedUrl)}`;
       break;
     case "GNews":
@@ -122,7 +121,6 @@ export function returnMappedResponse(data, server){
             source_url: `${new URL(article.url).origin}/` || "", 
             link: article.url || ""
           }));
-          console.log(mappedResponse);
           break;
         }
 
@@ -137,7 +135,6 @@ export function returnMappedResponse(data, server){
 // обрізає масив новин під потрібну кількість
 export function cutMappedResponse(data, length){
   if (!data.length) return [];
-  console.log(data, length);
   return data.slice(0, length);
 }
 
@@ -180,6 +177,16 @@ export function saveSearchData(cat, q, lang, serv, news){
   localStorage.setItem('articles', JSON.stringify(news));
 }
 
+// повертає картинки котік для заглушок
+export async function getPlaceholderPhoto(base_url, api_key) {
+  try {
+    const response = await fetch(`${base_url}${api_key}`);
+    const data = await response.json();
+    return data.map(cat => cat.url);
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 // --------------------- HEADER FUNCTIONS ----------------------
 

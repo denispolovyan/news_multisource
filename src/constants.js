@@ -19,6 +19,8 @@ export const API_KEY_WORLDNEWS = "0c626ef49e50477993ed9cbae4b2d1c9";
 export const API_BASE_URL_CURRENTS = "https://api.currentsapi.services/v1/search?limit=15&page_size=10&apiKey=";
 export const API_KEY_CURRENTS = "POGiwIiuYmU3WnpJjE2FElXch1hOLSWupxGxHTzm0WI9PJZt";
 
+export const API_BASE_URL_CAT = "https://api.thecatapi.com/v1/images/search?limit=10&api_key=";
+export const API_KEY_CAT = "live_MzUJAN6JqOy1I0xLEnbwX3qsjRsyzUQbYc5oJkiHiWixiSrBIobVLEdfzikOHU72"
 // ------------------------  ПАРАМЕТРИ ПОШУКУ ----------------------
 
 // Доступні категорії

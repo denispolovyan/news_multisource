@@ -39,6 +39,7 @@
   overflow: hidden;
   background-color: #f3f4f6;
   border-bottom: 1px solid #e5e5e5;
+  border-radius: 12px;
 }
 
 /* Фіксована висота зображення */
@@ -72,6 +73,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  z-index: 99999;
 }
 
 .news__source a {
@@ -159,6 +161,26 @@
   font-size: 1.05rem;
   color: #666;
   padding-top: 30px;
+}
+
+/* Заглушка зверху */
+.news__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+/* Фото-заглушка */
+.news__placeholder {
+  width: 60%;
+  opacity: 1;
+  border-radius: 10px;
 }
 
 /* ----------------------------- */

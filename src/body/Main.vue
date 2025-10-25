@@ -16,7 +16,16 @@
 
             <!-- Зображення -->
             <div class="news__image-wrapper" :class="{ 'darkThemeMain__image-wrapper': darkTheme == 'true' }">
-              <img :src="item.image_url || placeholder" @error="item.image_url = placeholder" class="news__image">
+              <!-- <img :src="item.image_url" @error="item.image_url = catsPlaceholders[index]" class="news__image"> -->
+
+              <!-- Основне зображення -->
+              <img :src="item.image_url" @error="() => { item.hasError = true; item.image_url = catsPlaceholders[index]; }" class="news__image" />
+
+              <!-- Заглушка (видно лише коли є помилка) -->
+              <div v-if="item.hasError" class="news__overlay">
+                <img src="../images/placeholder.png" class="news__placeholder" alt="placeholder" />
+              </div>
+
 
               <div class="news__source" v-if="item.source_name && item.source_url">
                 <a :href="item.source_url" target="_blank">{{ item.source_name }}</a>
@@ -64,13 +73,14 @@
 
 
 <script setup>
-import { ref, watch } from "vue";
-import placeholder from "@/images/placeholder.jpeg";
-import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS, API_KEY_CURRENTS, API_BASE_URL_CURRENTS } from "@/constants.js";
-import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE, } from "@/constants.js";
-import { returnUrlStr, returnMappedResponse, isParametersDifferent, getSavedData, saveSearchData } from '@/functions.js'
-import { onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
+import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS, API_KEY_CURRENTS, API_BASE_URL_CURRENTS, API_BASE_URL_CAT, API_KEY_CAT } from "@/constants.js";
+import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE } from "@/constants.js";
+
+import { returnUrlStr, returnMappedResponse, isParametersDifferent, getSavedData, saveSearchData, getPlaceholderPhoto } from '@/functions.js'
 import { themeValueStore } from '@/stores/themeValue'
+
+
 
 // push messages
 import { Notyf } from 'notyf';
@@ -120,6 +130,9 @@ let previousUrl = ref('');
 // Набитий масив новин
 const news = ref([]);
 let isResponseEmpty = false;
+
+// Набитий масив з котиків-плейсхолдерів
+const catsPlaceholders = ref([]);
 
 // Пуш повідомлення
 const notyf = new Notyf({
@@ -195,6 +208,10 @@ watch(
 async function getNews() {
   let url = "";
   setActualParams();
+  catsPlaceholders.value = await getPlaceholderPhoto(API_BASE_URL_CAT, API_KEY_CAT);
+  if (catsPlaceholders.value) localStorage.setItem('cat-placeholders', JSON.stringify(catsPlaceholders.value));
+  // console.log(typeof(catsPlaceholders.value));
+  // console.log((catsPlaceholders.value));
 
   // отримання url для запиту
   switch (SERVER.value) {
@@ -287,8 +304,19 @@ function setIsResponseEmpty() {
   }
 }
 
+// шукаємо новини по enter
+function handleEnter(event) {
+  if (event.key === 'Enter') {
+    getNews();
+  }
+}
+
 // ONMOUNTED
 onMounted(() => {
+  catsPlaceholders.value = JSON.parse(localStorage.getItem('cat-placeholders'));
+
+
+
   news.value = JSON.parse(localStorage.getItem('articles'));
   darkTheme.value = localStorage.getItem('theme');
 
@@ -300,7 +328,10 @@ onMounted(() => {
     });
   }
 
+  // вішаємо відслідковування ентер
+  window.addEventListener('keydown', handleEnter);
 });
+
 </script>
 
 <style scoped>
@@ -309,6 +340,6 @@ onMounted(() => {
 @import "../css/dark.css";
 
 .news__container {
-  margin: 10px 0;
+  margin: 15px 0;
 }
 </style>
