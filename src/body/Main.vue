@@ -19,7 +19,9 @@
               <!-- <img :src="item.image_url" @error="item.image_url = catsPlaceholders[index]" class="news__image"> -->
 
               <!-- Основне зображення -->
-              <img :src="item.image_url" @error="() => { item.hasError = true; item.image_url = catsPlaceholders[index]; }" class="news__image" />
+              <img :src="item.image_url"
+                @error="() => { item.hasError = true; item.image_url = catsPlaceholders[index]; }"
+                class="news__image" />
 
               <!-- Заглушка (видно лише коли є помилка) -->
               <div v-if="item.hasError" class="news__overlay">
@@ -59,6 +61,11 @@
               :class="{ 'darkThemeMain__link': darkTheme == 'true' }">
               Читати далі
             </a>
+            <div class="news__date" :class="{ 'darkThemeMain__date': darkTheme == 'true' }">
+              <p v-if="item.date_day"> {{ item.date_day }} </p>
+              <p v-if="item.date_time"> {{ item.date_time }} </p>
+            </div>
+
           </div>
         </div>
 

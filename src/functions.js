@@ -69,7 +69,9 @@ export function returnMappedResponse(data, server){
             description: article.description || "",
             source_name: article.source_name || "",
             source_url: article.source_url || "",
-            link: article.link || ""
+            link: article.link || "",
+            date_day: article.pubDate.slice(0, 10) || "",
+            date_time: article.pubDate.slice(11, 19) || ""
           }));
           break;
         case "GNews":
@@ -79,7 +81,9 @@ export function returnMappedResponse(data, server){
             description: article.description || "",
             source_name: article.source?.name || "",
             source_url: article.source?.url || "",
-            link: article.url || ""
+            link: article.url || "",
+            date_day: article.publishedAt.slice(0, 10) || "",
+            date_time: article.publishedAt.slice(11, 19) || ""
           }));
           break;
         case "NewsApi":
@@ -89,7 +93,9 @@ export function returnMappedResponse(data, server){
             description: article.description || "",
             source_name: article.source.name || "",
             source_url: `${new URL(article.url).origin}/` || "",
-            link: article.url || ""
+            link: article.url || "",
+            date_day: article.publishedAt.slice(0, 10) || "",
+            date_time: article.publishedAt.slice(11, 19) || ""
           }));
           break;
         case "TheNewsApi":
@@ -99,7 +105,9 @@ export function returnMappedResponse(data, server){
             description: article.description || "",
             source_name: article.source || "",
             source_url: `${new URL(article.url).origin}/` || "", 
-            link: article.url || ""
+            link: article.url || "",
+            date_day: article.published_at.slice(0, 10) || "",
+            date_time: article.published_at.slice(11, 19) || ""
           }));
           break;
         case "WorldNews":
@@ -109,7 +117,9 @@ export function returnMappedResponse(data, server){
             description: article.text || "",
             source_name: `${new URL(article.url).hostname.replace(/^www\./, '').replace(/\/$/, '')}` || "",
             source_url: `${new URL(article.url).origin}/` || "",
-            link: article.url || ""
+            link: article.url || "",
+            date_day: article.publish_date.slice(0, 10) || "",
+            date_time: article.publish_date.slice(11, 19) || ""
           }));
           break;
         case "Currents":
@@ -119,7 +129,9 @@ export function returnMappedResponse(data, server){
             description: article.description || "",
             source_name: `${new URL(article.url).hostname.replace(/^www\./, '').replace(/\/$/, '')}` || "",
             source_url: `${new URL(article.url).origin}/` || "", 
-            link: article.url || ""
+            link: article.url || "",
+            date_day: article.published.slice(0, 10) || "",
+            date_time: article.published.slice(11, 19) || "",
           }));
           break;
         }

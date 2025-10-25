@@ -13,6 +13,7 @@
 
 /* Картка новини */
 .news__card {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -38,8 +39,7 @@
   width: 100%;
   overflow: hidden;
   background-color: #f3f4f6;
-  border-bottom: 1px solid #e5e5e5;
-  border-radius: 12px;
+  border-radius: 5px;
 }
 
 /* Фіксована висота зображення */
@@ -73,7 +73,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  z-index: 99999;
+  /* z-index: 99999; */
 }
 
 .news__source a {
@@ -84,6 +84,32 @@
 
 .news__source a:hover {
   text-decoration: underline;
+}
+
+/* ----------------------------- */
+/*         ДАТА НОВИНИ           */
+/* ----------------------------- */
+
+.news__date {
+  position: absolute;
+  bottom: 1rem;
+  left: 5px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 0.775rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 5px;
+  backdrop-filter: blur(5px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  z-index: 99999;
+}
+
+.news__date p {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 /* ----------------------------- */
@@ -119,7 +145,7 @@
 }
 
 /* ----------------------------- */
-/*        ПОСИЛАННЯ НИЗОМ        */
+/*        ПОСИЛАННЯ              */
 /* ----------------------------- */
 
 .news__link {
@@ -163,6 +189,10 @@
   padding-top: 30px;
 }
 
+/* ----------------------------- */
+/*       ЯКЩО ФОТО НЕМАЄ         */
+/* ----------------------------- */
+
 /* Заглушка зверху */
 .news__overlay {
   position: absolute;
@@ -200,7 +230,6 @@
 
   .news__source {
     font-size: 0.7rem;
-    padding: 0.25rem 0.rem;
   }
 }
 
@@ -224,6 +253,11 @@
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
   }
+
+  .news__date {
+    font-size: 0.59rem;
+    bottom: 0.7rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -239,5 +273,10 @@
     margin: 0 0.6rem 0.6rem auto;
     padding: 0.3rem 0.6rem;
     font-size: 0.75rem;
+  }
+
+    .news__date {
+    font-size: 0.474rem;
+    bottom: 0.6rem;
   }
 }
