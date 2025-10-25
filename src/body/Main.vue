@@ -163,9 +163,9 @@ const notyf = new Notyf({
     },
     {
       type: 'info',
-      background: '#2196f3',
+      background: 'rgba(255, 140, 0, 0.95)',
       duration: 8000,
-      dismissible: true
+      dismissible: true,
     }
   ]
 });
@@ -217,8 +217,6 @@ async function getNews() {
   setActualParams();
   catsPlaceholders.value = await getPlaceholderPhoto(API_BASE_URL_CAT, API_KEY_CAT);
   if (catsPlaceholders.value) localStorage.setItem('cat-placeholders', JSON.stringify(catsPlaceholders.value));
-  // console.log(typeof(catsPlaceholders.value));
-  // console.log((catsPlaceholders.value));
 
   // отримання url для запиту
   switch (SERVER.value) {
@@ -323,7 +321,6 @@ onMounted(() => {
   catsPlaceholders.value = JSON.parse(localStorage.getItem('cat-placeholders'));
 
 
-
   news.value = JSON.parse(localStorage.getItem('articles'));
   darkTheme.value = localStorage.getItem('theme');
 
@@ -349,4 +346,5 @@ onMounted(() => {
 .news__container {
   margin: 15px 0;
 }
+
 </style>

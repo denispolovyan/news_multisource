@@ -71,7 +71,7 @@ export function returnMappedResponse(data, server){
             source_url: article.source_url || "",
             link: article.link || "",
             date_day: article.pubDate.slice(0, 10) || "",
-            date_time: article.pubDate.slice(11, 19) || ""
+            date_time: article.pubDate.slice(11, 16) || ""
           }));
           break;
         case "GNews":
@@ -83,7 +83,7 @@ export function returnMappedResponse(data, server){
             source_url: article.source?.url || "",
             link: article.url || "",
             date_day: article.publishedAt.slice(0, 10) || "",
-            date_time: article.publishedAt.slice(11, 19) || ""
+            date_time: article.publishedAt.slice(11, 16) || ""
           }));
           break;
         case "NewsApi":
@@ -95,7 +95,7 @@ export function returnMappedResponse(data, server){
             source_url: `${new URL(article.url).origin}/` || "",
             link: article.url || "",
             date_day: article.publishedAt.slice(0, 10) || "",
-            date_time: article.publishedAt.slice(11, 19) || ""
+            date_time: article.publishedAt.slice(11, 16) || ""
           }));
           break;
         case "TheNewsApi":
@@ -107,7 +107,7 @@ export function returnMappedResponse(data, server){
             source_url: `${new URL(article.url).origin}/` || "", 
             link: article.url || "",
             date_day: article.published_at.slice(0, 10) || "",
-            date_time: article.published_at.slice(11, 19) || ""
+            date_time: article.published_at.slice(11, 16) || ""
           }));
           break;
         case "WorldNews":
@@ -119,7 +119,7 @@ export function returnMappedResponse(data, server){
             source_url: `${new URL(article.url).origin}/` || "",
             link: article.url || "",
             date_day: article.publish_date.slice(0, 10) || "",
-            date_time: article.publish_date.slice(11, 19) || ""
+            date_time: article.publish_date.slice(11, 16) || ""
           }));
           break;
         case "Currents":
@@ -131,7 +131,7 @@ export function returnMappedResponse(data, server){
             source_url: `${new URL(article.url).origin}/` || "", 
             link: article.url || "",
             date_day: article.published.slice(0, 10) || "",
-            date_time: article.published.slice(11, 19) || "",
+            date_time: article.published.slice(11, 16) || "",
           }));
           break;
         }
@@ -157,28 +157,33 @@ export function isParametersDifferent(value, prevValue){
 
 // повертає параметри пошуку юрл строки
 export function getSavedData() {
-  const mappings = {
-    server: 'сервер',
-    query: 'запит',
-    category: 'категорія',
-    language: 'мова'
-  };
+  const keys = ['server', 'query', 'category', 'language'];
 
-  const result = Object.entries(mappings)
-    .map(([key, label]) => {
+  const result = keys
+    .map((key) => {
       const value = localStorage.getItem(key);
       if (!value || value === 'null') return null;
-      // Для category і language беремо частину після коми
-      const displayValue = (key === 'category' || key === 'language') && value.includes(',')
-        ? value.split(',')[1]
-        : value;
-      return displayValue ? `${label} - ${displayValue.toLowerCase()}` : null;
+
+      // Якщо category або language — беремо частину після коми і робимо нижній регістр
+      if ((key === 'category' || key === 'language') && value.includes(',')) {
+        return value.split(',')[1].trim().toLowerCase();
+      }
+
+      // Якщо category або language без коми — теж у нижній регістр
+      if (key === 'category' || key === 'language') {
+        return value.trim().toLowerCase();
+      }
+
+      // Інакше просто повертаємо значення
+      return value.trim();
     })
-    .filter(Boolean)  // прибираємо null
-    .join(', ');      // з'єднуємо в одну строку
+    .filter(Boolean)
+    .join(', ');
 
   return result;
 }
+
+
 
 // записує параметри пошуку в локальну пам'ять
 export function saveSearchData(cat, q, lang, serv, news){
