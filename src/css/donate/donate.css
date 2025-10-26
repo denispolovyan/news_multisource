@@ -1,0 +1,315 @@
+/* ----------------------------- */
+/*        ОСНОВНА ОБГОРТКА       */
+/* ----------------------------- */
+
+.donate__overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 15, 15, 0.8);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  animation: fadeIn 0.25s ease forwards;
+  overflow-y: auto;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* ----------------------------- */
+/*        ПАНЕЛЬ МОДАЛЬНА        */
+/* ----------------------------- */
+
+.donate__panel {
+  background: #1c1c1c;
+  border-radius: 5px;
+  padding: 0px;
+  width: 50%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  color: #eaeaea;
+
+  box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.1);
+  animation: slideDown 0.35s ease forwards;
+}
+
+/* ----------------------------- */
+/*        КНОПКА ЗАКРИТТЯ        */
+/* ----------------------------- */
+
+.donate__close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 32px;
+  /* трохи більша кнопка */
+  height: 32px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.4s ease;
+}
+
+.donate__close::before,
+.donate__close::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 26px;
+  /* збільшена товщина хрестика */
+  height: 3px;
+  background: #eaeaea;
+  transform-origin: center;
+  transition: transform 0.4s ease, background 0.4s ease;
+}
+
+.donate__close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.donate__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* Ефект наведення */
+.donate__close:hover {
+  transform: rotate(180deg);
+}
+
+.donate__close:hover::before,
+.donate__close:hover::after {
+  background: #ffd700;
+  /* яскраво-жовтий */
+}
+
+
+/* ----------------------------- */
+/*        КОНТЕНТ                */
+/* ----------------------------- */
+
+.donate__image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 20px;
+}
+
+.donate__title {
+  padding: 0px 10px;
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #f1f1f1;
+}
+
+.donate__description {
+  padding: 0px 10px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #cccccc;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.donate__button {
+  display: inline-block;
+  background: linear-gradient(135deg,
+      rgba(0, 102, 255, 1),
+      rgba(255, 215, 0, 1));
+  background-size: 200% 200%;
+  background-position: left center;
+  color: #eaeaea;
+  text-decoration: none;
+  padding: 12px 28px;
+  transition: all 0.4s ease, background-position 0.8s ease;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.donate__button:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+}
+
+/* ----------------------------- */
+/*        ПУСТИЙ СТАН            */
+/* ----------------------------- */
+
+.donate__empty {
+  text-align: center;
+  padding: 50px 0 20px 0;
+}
+
+.donate__empty-title {
+  padding: 0px 10px 10px 10px;
+  font-size: 1.3rem;
+  color: #f0f0f0;
+}
+
+.donate__empty-text {
+  margin: 0 auto 15px auto;
+  max-width: 70%;
+  padding: 0px 10px 10px 10px;
+  font-size: 1rem;
+  color: #b5b5b5;
+  letter-spacing: 0.5px;
+}
+
+.donate__empty-mail {
+  margin: 0px 10px;
+  padding: 10px 15px;
+  background: #f2e71c;
+  border-radius: 5px;
+  font-weight: 600;
+  text-align: center;
+  color: #2d2d2d;
+  transition: all 0.6s ease; /* ⏱ час анімації */
+}
+
+.donate__empty-mail:hover {
+  background: #ffb300;
+  box-shadow: 0 4px 12px rgba(255, 240, 74, 0.4);
+  transform: translateY(-2px);
+}
+
+/* ----------------------------- */
+/*        ПІДТРИМКА DEV          */
+/* ----------------------------- */
+
+.donate__support {
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.donate__support-button {
+  display: inline-block;
+  background: linear-gradient(135deg,
+      rgba(255, 215, 0, 0.7),
+      rgba(0, 102, 255, 0.7));
+  background-size: 200% 200%;
+  /* збільшуємо поле для руху */
+  background-position: left center;
+  color: #fff;
+  text-decoration: none;
+  padding: 15px 24px;
+  border-radius: 0 0 5px 5px;
+  transition: all 0.4s ease, background-position 0.8s ease;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.donate__support-button:hover {
+  background-position: right center;
+  /* зміщуємо градієнт */
+  transform: translateY(-2px);
+}
+
+/* ----------------------------- */
+/*           АНІМАЦІЇ            */
+/* ----------------------------- */
+
+@keyframes donate__panel {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.25);
+  }
+}
+
+/* ----------------------------- */
+/*        АНІМАЦІЇ               */
+/* ----------------------------- */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ----------------------------- */
+/*        АДАПТИВНІСТЬ           */
+/* ----------------------------- */
+@media (max-width: 1400px) {
+  .donate__panel {
+    width: 70%;
+  }
+}
+
+@media (max-width: 950px) {
+  .donate__panel {
+    width: 90%;
+  }
+}
+
+@media (max-width: 800px) {
+  .donate__panel {
+    width: 90%;
+  }
+
+  .donate__title {
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+  }
+
+  .donate__description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .donate__empty-title {}
+
+  .donate__empty-text {}
+}
+
+@media (max-width: 550px) {
+  .donate__panel {
+    width: 95%;
+  }
+
+  .donate__title {
+    font-size: 1.2rem;
+  }
+
+  .donate__description {
+    font-size: 0.7rem;
+    line-height: 1.2;
+  }
+
+  .donate__empty-text {
+    max-width: 90%;
+
+  }
+}

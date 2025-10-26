@@ -21,6 +21,7 @@ export const API_KEY_CURRENTS = "POGiwIiuYmU3WnpJjE2FElXch1hOLSWupxGxHTzm0WI9PJZ
 
 export const API_BASE_URL_CAT = "https://api.thecatapi.com/v1/images/search?limit=10&api_key=";
 export const API_KEY_CAT = "live_MzUJAN6JqOy1I0xLEnbwX3qsjRsyzUQbYc5oJkiHiWixiSrBIobVLEdfzikOHU72"
+
 // ------------------------  ПАРАМЕТРИ ПОШУКУ ----------------------
 
 // Доступні категорії
@@ -67,6 +68,16 @@ export const RESPONSE_DATA_PATH = {
 };
 
 export const UNSUCCESSFUL_SEARCH_MESSAGE = ['Здійсніть пошук новин', 'За вашим запитом не знайдено новин'];
+
+// Інформація для підтримки ЗСУ/ розробника
+export const DONATION_INFO = {
+  // title: 'Тестовий збір',
+  // description: "looorem ipsum dolor amenrem iporem ipsum dolor amensum dolor amenorem ipsum dolor amenorem orem ipsum dolor amenioremorem ipsum dolororem ipsum dolor amen amen ipsum dolor amenpsum dolor amenrem ipsorem ipsum dolor amenorem ipsum dolor amenuorem ipsum dolor aorem ipsum dolor amenmenm dolor amen",
+  // link: 'url',
+}
+
+// Посилання на банку з можливістю підтримати
+export const SUPPORT_CREATOR_INFO = "https://send.monobank.ua/jar/2cxtUHyFPK";
 
 
 

@@ -103,7 +103,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  z-index: 99999;
 }
 
 .news__date p {
@@ -153,7 +152,7 @@
   align-self: flex-end;
   margin: 0 1rem 1rem auto;
   padding: 0.6rem 1.2rem;
-  background: #0078d7;
+  background: #f6962f;
   color: #ffffff;
   font-weight: 600;
   font-size: 0.95rem;
@@ -167,7 +166,7 @@
 
 /* Ефект при наведенні */
 .news__link:hover {
-  background: #3867d6;
+  background: #e67700;
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 91, 181, 0.35);
 }

@@ -16,7 +16,6 @@
 
             <!-- Зображення -->
             <div class="news__image-wrapper" :class="{ 'darkThemeMain__image-wrapper': darkTheme == 'true' }">
-              <!-- <img :src="item.image_url" @error="item.image_url = catsPlaceholders[index]" class="news__image"> -->
 
               <!-- Основне зображення -->
               <img :src="item.image_url"
@@ -25,7 +24,7 @@
 
               <!-- Заглушка (видно лише коли є помилка) -->
               <div v-if="item.hasError" class="news__overlay">
-                <img src="../images/placeholder.png" class="news__placeholder" alt="placeholder" />
+                <img src="../images/main/placeholder.png" class="news__placeholder" alt="placeholder" />
               </div>
 
 
@@ -86,8 +85,6 @@ import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCC
 
 import { returnUrlStr, returnMappedResponse, isParametersDifferent, getSavedData, saveSearchData, getPlaceholderPhoto } from '@/functions.js'
 import { themeValueStore } from '@/stores/themeValue'
-
-
 
 // push messages
 import { Notyf } from 'notyf';
@@ -163,7 +160,13 @@ const notyf = new Notyf({
     },
     {
       type: 'info',
-      background: 'rgba(255, 140, 0, 0.95)',
+      background: 'rgba(255, 140, 0, 1)',
+      duration: 8000,
+      dismissible: true,
+    },
+    {
+      type: 'info-dark',
+      background: '#5050ff',
       duration: 8000,
       dismissible: true,
     }
@@ -323,13 +326,21 @@ onMounted(() => {
 
   news.value = JSON.parse(localStorage.getItem('articles'));
   darkTheme.value = localStorage.getItem('theme');
+  // console.
 
   // виводимо останній пошук
   if (news.value && news.value.length) {
-    notyf.open({
-      type: 'info',
-      message: `Відновлено результати останнього пошуку за параметрами: ${getSavedData()}`
-    });
+    if (darkTheme.value != 'true') {
+      notyf.open({
+        type: 'info',
+        message: `Відновлено результати останнього пошуку за параметрами: ${getSavedData()}`
+      });
+    } else {
+      notyf.open({
+        type: 'info-dark',
+        message: `Відновлено результати останнього пошуку за параметрами: ${getSavedData()}`
+      });
+    }
   }
 
   // вішаємо відслідковування ентер
@@ -346,5 +357,4 @@ onMounted(() => {
 .news__container {
   margin: 15px 0;
 }
-
 </style>

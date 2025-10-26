@@ -1,5 +1,20 @@
 // --------------------- MAIN FUNCTIONS ----------------------
 
+// встановлює кукі
+export function setCookie(name, value, minutes) {
+  const date = new Date();
+  date.setTime(date.getTime() + minutes * 60 * 1000);
+  document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
+}
+
+// перевіряє чи кукі існують
+export function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? match[2] : null;
+}
+
+// --------------------- MAIN FUNCTIONS ----------------------
+
 // формує адресу для запиту на сервер
 export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUERY) {
   let detalizedUrl = str;
@@ -183,8 +198,6 @@ export function getSavedData() {
   return result;
 }
 
-
-
 // записує параметри пошуку в локальну пам'ять
 export function saveSearchData(cat, q, lang, serv, news){
   localStorage.setItem('category', cat);
@@ -217,7 +230,7 @@ export function returnStringifiedTheme(booleanString){
 
 export function scrollToTop() {
   window.scrollTo({
-    top: 20,
+    top: 0,
     behavior: 'smooth' // плавна прокрутка
   });
 }

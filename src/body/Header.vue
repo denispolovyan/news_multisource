@@ -6,7 +6,7 @@
         <div class="header__up_left">
           <div class="header__logo" :class="{ 'darkThemeHeader__logo': darkTheme == 'true' }">
             News bag
-            <img src="../images/logo.png" alt="bag logo" />
+            <img src="../images/header/logo.png" alt="bag logo" />
           </div>
         </div>
 

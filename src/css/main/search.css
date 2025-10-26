@@ -20,7 +20,7 @@
   padding: 10px;
   font-size: 1rem;
   font-weight: 600;
-  background-color: #0078d7;
+  background-color: #f6962f;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -32,7 +32,7 @@
 }
 
 .news__button button:hover {
-  background-color: #3867d6;
+  background-color: #e67700;
   transform: translateY(-2px);
 }
 

@@ -33,7 +33,8 @@
   animation: slideDown 0.35s ease forwards;
   max-width: 90%;
   width: 400px;
-  margin-top: 80px; /* 👈 додає відступ згори */
+  margin-top: 80px;
+  /* 👈 додає відступ згори */
 }
 
 
@@ -58,6 +59,7 @@
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .menu-links a:hover {
@@ -126,23 +128,11 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
-.darkThemeHeader .menu-links a:hover {
+.menu-links a:hover {
   background: rgba(255, 255, 255, 0.1);
-  color: #58a6ff;
+  color: #4a4aff;
 }
 
-/* Світла тема (за бажанням) */
-.lightThemeHeader .menu-panel {
-  background: #ffffff;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.lightThemeHeader .menu-links a {
-  color: #222;
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.lightThemeHeader .menu-links a:hover {
-  background: rgba(0, 0, 0, 0.08);
-  color: #0078d7;
+.menu-links a {
+  letter-spacing: 1px;
 }
