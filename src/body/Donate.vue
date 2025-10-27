@@ -38,8 +38,6 @@
   </div>
 </template>
 
-
-
 <script setup>
 import { donateStateStore } from '@/stores/donateState';
 import { DONATION_INFO, SUPPORT_CREATOR_INFO } from "@/constants.js";

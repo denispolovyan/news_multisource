@@ -7,13 +7,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { themeValueStore } from '@/stores/themeValue';
+import { ref, watch } from "vue";
 import { donateStateStore } from '@/stores/donateState'
 
-// theme const
-const themeStore = themeValueStore();
-const darkTheme = ref();
+// props
+const props = defineProps({
+    darkTheme: {
+    type: String,
+    default: null,
+  }
+});
 
 // donate const
 const donateStore = donateStateStore();
@@ -25,26 +28,13 @@ function openDonate(){
     donateStore.setDonateState(donateState.value);
 }
 
-// watch theme
-watch(
-    () => themeStore.theme,
-    (newVal) => {
-        darkTheme.value = newVal;
-    }
-)
-
 // watch donate
 watch(
   () => donateStore.donateState,
   (newVal) => {
     donateState.value = newVal;
-
   }
 )
-
-onMounted(() => {
-    darkTheme.value = localStorage.getItem('theme');
-});
 </script>
 
 <style scoped>

@@ -7,21 +7,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { themeValueStore } from '@/stores/themeValue';
-
-const themeStore = themeValueStore();
-const darkTheme = ref();
-
-watch(
-  () => themeStore.theme,
-  (newVal) => {
-    darkTheme.value = newVal;
+const props = defineProps({
+    darkTheme: {
+    type: String,
+    default: null,
   }
-)
-
-onMounted(() => {
-  darkTheme.value = localStorage.getItem('theme');
 });
 </script>
 

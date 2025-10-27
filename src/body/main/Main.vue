@@ -1,77 +1,13 @@
 <template>
   <div class="wrapper" :class="{ 'darkThemeMain': darkTheme == 'true' }">
-    <div class="news container">
+    <div class="container">
       <div class="news__container">
         <!-- Кнопка отримання новин -->
-        <div class="news__button" :class="{ 'darkThemeMain__button': darkTheme == 'true' }">
-          <button @click="getNews">
-            Отримати новини
-          </button>
-        </div>
-
+        <MainSearch @click="getNews" :darkTheme="darkTheme" />
         <!-- Список новин -->
-        <div v-if="news?.length" class="news__list">
-          <div v-for="(item, index) in news" :key="index" class="news__card"
-            :class="{ 'darkThemeMain__card': darkTheme == 'true' }">
-
-            <!-- Зображення -->
-            <div class="news__image-wrapper" :class="{ 'darkThemeMain__image-wrapper': darkTheme == 'true' }">
-
-              <!-- Основне зображення -->
-              <img :src="item.image_url"
-                @error="() => { item.hasError = true; item.image_url = catsPlaceholders[index]; }"
-                class="news__image" />
-
-              <!-- Заглушка (видно лише коли є помилка) -->
-              <div v-if="item.hasError" class="news__overlay">
-                <img src="../images/main/placeholder.png" class="news__placeholder" alt="placeholder" />
-              </div>
-
-
-              <div class="news__source" v-if="item.source_name && item.source_url">
-                <a :href="item.source_url" target="_blank">{{ item.source_name }}</a>
-              </div>
-            </div>
-
-            <!-- Тіло картки -->
-            <div class="news__body" :class="{ 'darkThemeMain__body': darkTheme == 'true' }">
-              <h4 class="news__title" :class="{ 'darkThemeMain__title': darkTheme == 'true' }">
-                {{
-                  !item.title
-                    ? ""
-                    : item.title.length > 80
-                      ? item.title.slice(0, 80) + "..."
-                      : item.title
-                }}
-              </h4>
-              <p class="news__description" :class="{ 'darkThemeMain__description': darkTheme == 'true' }">
-                {{
-                  !item.description
-                    ? ""
-                    : item.description.length > 300
-                      ? item.description.slice(0, 300) + "..."
-                      : item.description
-                }}
-              </p>
-            </div>
-
-            <!-- Посилання -->
-            <a :href="item.link" target="_blank" class="news__link"
-              :class="{ 'darkThemeMain__link': darkTheme == 'true' }">
-              Читати далі
-            </a>
-            <div class="news__date" :class="{ 'darkThemeMain__date': darkTheme == 'true' }">
-              <p v-if="item.date_day"> {{ item.date_day }} </p>
-              <p v-if="item.date_time"> {{ item.date_time }} </p>
-            </div>
-
-          </div>
-        </div>
-
+        <MainNews v-if="news?.length" :news="news" :catsPlaceholders="catsPlaceholders" :darkTheme="darkTheme" />
         <!-- Якщо новин немає -->
-        <p v-else class="news__empty" :class="{ 'darkThemeMain__empty': darkTheme == 'true' }">
-          {{ isResponseEmpty ? UNSUCCESSFUL_SEARCH_MESSAGE[1] : UNSUCCESSFUL_SEARCH_MESSAGE[0] }}
-        </p>
+        <MainEmpty v-else :isResponseEmpty="isResponseEmpty" :darkTheme="darkTheme" />
       </div>
     </div>
   </div>
@@ -79,18 +15,30 @@
 
 
 <script setup>
+// base
 import { ref, watch, onMounted } from "vue";
-import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS, API_KEY_CURRENTS, API_BASE_URL_CURRENTS, API_BASE_URL_CAT, API_KEY_CAT } from "@/constants.js";
-import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, UNSUCCESSFUL_SEARCH_MESSAGE } from "@/constants.js";
 
+// constants
+import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS, API_KEY_CURRENTS, API_BASE_URL_CURRENTS, API_BASE_URL_CAT, API_KEY_CAT } from "@/constants.js";
+import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH } from "@/constants.js";
+
+// functions
 import { returnUrlStr, returnMappedResponse, isParametersDifferent, getSavedData, saveSearchData, getPlaceholderPhoto } from '@/functions.js'
+
+// store
 import { themeValueStore } from '@/stores/themeValue'
+
+// components
+import MainNews from "./MainNews.vue";
+import MainSearch from "./MainSearch.vue";
+import MainEmpty from "./MainEmpty.vue";
+
 
 // push messages
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 
-// Props
+// props
 const props = defineProps({
   category: {
     type: String,
@@ -114,15 +62,15 @@ const props = defineProps({
   },
 });
 
-// Константи
+// const
 const CATEGORY = ref(props.category || 'general,Усі категорії');
 const QUERY = ref(props.query);
 const LANGUAGE = ref(props.language || 'uk,Українська');
 const SERVER = ref(props.server || 'NewsData');
 
-// Тема
+// theme
 const themeStore = themeValueStore();
-let darkTheme = ref(false);
+let darkTheme = ref('false');
 
 // Параметри пошуку
 let detalizedLanguage = ref(LANGUAGES[0]);
@@ -218,8 +166,6 @@ watch(
 async function getNews() {
   let url = "";
   setActualParams();
-  catsPlaceholders.value = await getPlaceholderPhoto(API_BASE_URL_CAT, API_KEY_CAT);
-  if (catsPlaceholders.value) localStorage.setItem('cat-placeholders', JSON.stringify(catsPlaceholders.value));
 
   // отримання url для запиту
   switch (SERVER.value) {
@@ -285,6 +231,9 @@ async function getNews() {
         break;
     }
 
+    catsPlaceholders.value = await getPlaceholderPhoto(API_BASE_URL_CAT, API_KEY_CAT);
+    if (catsPlaceholders.value) localStorage.setItem('cat-placeholders', JSON.stringify(catsPlaceholders.value));
+
     news.value = returnMappedResponse(data[RESPONSE_DATA_PATH[SERVER.value]], SERVER.value);
     news.value.length ? notyf.success('Успішний пошук') : notyf.error('Новини не знайдені');
     saveSearchData(detalizedCategory, QUERY.value, detalizedLanguage, SERVER.value, news.value);
@@ -323,10 +272,8 @@ function handleEnter(event) {
 onMounted(() => {
   catsPlaceholders.value = JSON.parse(localStorage.getItem('cat-placeholders'));
 
-
   news.value = JSON.parse(localStorage.getItem('articles'));
   darkTheme.value = localStorage.getItem('theme');
-  // console.
 
   // виводимо останній пошук
   if (news.value && news.value.length) {
@@ -350,9 +297,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@import "../css/main/news.css";
-@import "../css/main/search.css";
-@import "../css/dark.css";
+@import "@/css/dark.css";
 
 .news__container {
   margin: 15px 0;

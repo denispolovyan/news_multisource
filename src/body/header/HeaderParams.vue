@@ -1,47 +1,6 @@
 <template>
-  <div class="wrapper" :class="{ 'darkThemeHeader': darkTheme == 'true' }" id="header-container">
-    <header class="header container">
-      <!-- Верхня частина -->
-      <div class="header__up">
-        <div class="header__up_left">
-          <div class="header__logo" :class="{ 'darkThemeHeader__logo': darkTheme == 'true' }">
-            News bag
-            <img src="../images/header/logo.png" alt="bag logo" />
-          </div>
-        </div>
-
-        <div class="header__up_right">
-          <!-- Перемикач теми -->
-          <div class="theme-toggle" :class="{ 'darkThemeHeader__button': darkTheme == 'true' }">
-            <input type="checkbox" id="theme-switch" class="theme-checkbox" v-model="darkThemeSwitch"
-              @click="changeTheme($event.target.checked)" />
-            <label for="theme-switch" class="theme-toggle-label">
-              <div class="theme-icons">
-                <svg class="icon sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path
-                    d="M12 18a6 6 0 100-12 6 6 0 000 12zM12 1v2m0 18v2m11-11h-2M3 12H1m16.95 7.07l1.41 1.41M4.64 4.64L3.22 3.22m0 17.56l1.42-1.42M19.36 4.64l1.42-1.42" />
-                </svg>
-                <svg class="icon moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
-                </svg>
-              </div>
-              <div class="toggle-slider"></div>
-            </label>
-          </div>
-
-          <!-- Бургер -->
-          <div :class="{ 'darkThemeHeader__burger': darkTheme == 'true' }" @click="openMenu()">
-            <div class="burger" :class="[{ active: isMenuOpen }]">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Нижня частина -->
-      <div class="header__down">
+    <!-- Нижня частина -->
+    <div class="header__down">
         <div>
           <select tabindex="1" class="header__server header__button" @change="selectServer($event.target.value)">
             <option v-for="(serv, index) in SERVER" :key="index" :value="serv">
@@ -72,23 +31,16 @@
           <input tabindex="4" v-model="inputValue" type="text" placeholder="Ключові слова" class="header__button" maxlength="20"
             @input="selectInput(inputValue)" />
         </div>
-      </div>
-    </header>
-  </div>
+    </div>
 </template>
 
 <script setup>
 // base
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 
 // constants
 import { CATEGORIES, LANGUAGES, SERVER } from "@/constants.js";
 
-// functions
-import { returnStringifiedTheme } from "@/functions.js";
-
-// stores
-import { themeValueStore } from '@/stores/themeValue';
 
 // emits
 const emit = defineEmits([
@@ -96,15 +48,7 @@ const emit = defineEmits([
   "querySelected",
   "languageSelected",
   "serverSelected",
-  "menuHandled"
 ]);
-
-// store consts
-const themeStore = themeValueStore();
-
-// consts 
-const darkTheme = ref();
-const darkThemeSwitch = ref();
 
 let categoryValue = ref(CATEGORIES[0]);
 let languageValue = ref(LANGUAGES[0]);
@@ -113,18 +57,6 @@ let inputValue = ref("");
 let previousServerValue = ref(SERVER[0]);
 let languagesValues = ref(LANGUAGES);
 let categoriesValues = ref(CATEGORIES);
-
-let isMenuOpen = ref(false);
-
-// watch
-watch(
-  () => themeStore.theme,
-  (newVal) => {
-    darkThemeSwitch.value = newVal;
-    darkTheme.value = newVal;
-
-  }
-)
 
 // functions
 function sortSearchParameters(serv) {
@@ -179,12 +111,6 @@ function selectServer(serv) {
   previousServerValue.value = serv;
 }
 
-// Передаємо стан меню
-function openMenu() {
-  isMenuOpen.value = !isMenuOpen.value;
-  emit("menuHandled", isMenuOpen.value);
-}
-
 // встановлюємо першу категорію після сортування
 function setSortedCategory() {
   categoryValue.value = categoriesValues.value[0];
@@ -197,28 +123,13 @@ function setSortedLanguage() {
   emit("languageSelected", Object.values(languageValue.value).join(','));
 }
 
-// змінюємо значення теми 
-function changeTheme(theme) {
-  localStorage.setItem('theme', returnStringifiedTheme(theme));
-  themeStore.theme = returnStringifiedTheme(theme);
-}
-
 // onMounted
 onMounted(() => {
   setSortedCategory();
-
-  // встановленн теми
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme == null) {
-    themeStore.theme = 'false';
-  } else {
-    darkThemeSwitch.value = savedTheme;
-    darkTheme.value = savedTheme;
-  }
 });
 </script>
 
 <style scoped>
-@import "../css/header/header.css";
-@import "../css/dark.css";
+@import "@/css/header/header.css";
+@import "@/css/dark.css";
 </style>
