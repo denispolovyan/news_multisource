@@ -42,7 +42,12 @@ export const LANGUAGES = [
 
 // Сервера для запитів
 export const SERVER = [
-   'NewsData','GNews', 'NewsApi', 'TheNewsApi', 'WorldNews', 'Currents'
+   'NewsData', // здоров'я так собі
+   'GNews', 
+   'NewsApi', 
+   'TheNewsApi', 
+   'WorldNews', 
+   'Currents'
 ]
 
 // ------------------------  ІНШІ КОНСТАНТИ ----------------------
@@ -79,5 +84,7 @@ export const DONATION_INFO = {
 // Посилання на банку з можливістю підтримати
 export const SUPPORT_CREATOR_INFO = "https://send.monobank.ua/jar/2cxtUHyFPK";
 
+// кількість новин на одній сторінці
+export const PAGINATED_NEWS_LENGTH = 4;
 
 

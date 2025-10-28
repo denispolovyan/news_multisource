@@ -41,7 +41,6 @@ import { ref, onMounted } from "vue";
 // constants
 import { CATEGORIES, LANGUAGES, SERVER } from "@/constants.js";
 
-
 // emits
 const emit = defineEmits([
   "categorySelected",

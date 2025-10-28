@@ -5,14 +5,16 @@
         <!-- Кнопка отримання новин -->
         <MainSearch @click="getNews" :darkTheme="darkTheme" />
         <!-- Список новин -->
-        <MainNews v-if="news?.length" :news="news" :catsPlaceholders="catsPlaceholders" :darkTheme="darkTheme" />
+        <MainNews v-if="news?.length" :news="paginatedNews" :catsPlaceholders="catsPlaceholders"
+          :darkTheme="darkTheme" />
         <!-- Якщо новин немає -->
         <MainEmpty v-else :isResponseEmpty="isResponseEmpty" :darkTheme="darkTheme" />
+        <!-- Довантажити новини  -->
+        <MainLoadMore v-if="news?.length && (viewedAllNews == 'false')" @click="increaseNewsQuantity()" :darkTheme="darkTheme" />
       </div>
     </div>
   </div>
 </template>
-
 
 <script setup>
 // base
@@ -20,7 +22,7 @@ import { ref, watch, onMounted } from "vue";
 
 // constants
 import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS, API_KEY_CURRENTS, API_BASE_URL_CURRENTS, API_BASE_URL_CAT, API_KEY_CAT } from "@/constants.js";
-import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH } from "@/constants.js";
+import { LANGUAGES, CATEGORIES, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, PAGINATED_NEWS_LENGTH } from "@/constants.js";
 
 // functions
 import { returnUrlStr, returnMappedResponse, isParametersDifferent, getSavedData, saveSearchData, getPlaceholderPhoto } from '@/functions.js'
@@ -32,7 +34,7 @@ import { themeValueStore } from '@/stores/themeValue'
 import MainNews from "./MainNews.vue";
 import MainSearch from "./MainSearch.vue";
 import MainEmpty from "./MainEmpty.vue";
-
+import MainLoadMore from "./MainLoadMore.vue";
 
 // push messages
 import { Notyf } from 'notyf';
@@ -81,6 +83,14 @@ let previousUrl = ref('');
 
 // Набитий масив новин
 const news = ref([]);
+
+// змінні для кнопки Завантажити ще
+const viewedAllNews = ref('false');
+let paginatedNews = ref([]);
+let newsCounter = ref(0);
+
+
+// чи відповідь від сервера пуста
 let isResponseEmpty = false;
 
 // Набитий масив з котиків-плейсхолдерів
@@ -201,6 +211,11 @@ async function getNews() {
     return;
   } else {
     previousUrl.value = url;
+
+    newsCounter.value = 0;
+    localStorage.setItem('news-counter', newsCounter.value);
+
+    paginatedNews.value = [];
   }
 
   // отримання даних від сервера
@@ -236,6 +251,7 @@ async function getNews() {
 
     news.value = returnMappedResponse(data[RESPONSE_DATA_PATH[SERVER.value]], SERVER.value);
     news.value.length ? notyf.success('Успішний пошук') : notyf.error('Новини не знайдені');
+    increaseNewsQuantity();
     saveSearchData(detalizedCategory, QUERY.value, detalizedLanguage, SERVER.value, news.value);
 
     setIsResponseEmpty();
@@ -268,6 +284,28 @@ function handleEnter(event) {
   }
 }
 
+// наповнюємо масив новин при натисканні на Більше новин
+function increaseNewsQuantity() {
+  if (news.value.length) {
+    newsCounter.value += PAGINATED_NEWS_LENGTH;
+
+    if (newsCounter.value >= news.value.length) {
+      const moved = news.value.slice(newsCounter.value - PAGINATED_NEWS_LENGTH, news.value.length);
+      paginatedNews.value.push(...moved);
+
+      viewedAllNews.value = 'true';
+      localStorage.setItem('news-counter', news.value.length)
+    } else {
+      const moved = news.value.slice(newsCounter.value - PAGINATED_NEWS_LENGTH, newsCounter.value);
+      paginatedNews.value.push(...moved);
+      viewedAllNews.value = 'false';
+      localStorage.setItem('news-counter', newsCounter.value);
+    }
+
+    localStorage.setItem('viewed-all-news', viewedAllNews.value);
+  }
+}
+
 // ONMOUNTED
 onMounted(() => {
   catsPlaceholders.value = JSON.parse(localStorage.getItem('cat-placeholders'));
@@ -288,6 +326,13 @@ onMounted(() => {
         message: `Відновлено результати останнього пошуку за параметрами: ${getSavedData()}`
       });
     }
+  }
+
+  // вирізаємо з отриманих новин певну кількість новин, щоб показати клієнту
+  viewedAllNews.value = localStorage.getItem('viewed-all-news');
+  newsCounter.value = localStorage.getItem('news-counter');
+  if (news.value.length) {
+    paginatedNews.value.push(...news.value.slice(0, newsCounter.value));
   }
 
   // вішаємо відслідковування ентер

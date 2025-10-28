@@ -13,8 +13,6 @@ export function getCookie(name) {
   return match ? match[2] : null;
 }
 
-// --------------------- MAIN FUNCTIONS ----------------------
-
 // формує адресу для запиту на сервер
 export function returnUrlStr(str, api, detalizedCategory, detalizedLanguage, QUERY) {
   let detalizedUrl = str;
@@ -234,3 +232,5 @@ export function scrollToTop() {
     behavior: 'smooth' // плавна прокрутка
   });
 }
+
+
