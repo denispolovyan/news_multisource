@@ -7,7 +7,7 @@
 
                 <!-- Основне зображення -->
                 <img :src="item.image_url"
-                    @error="() => { item.hasError = true; item.image_url = catsPlaceholders[index]; }"
+                    @error="() => { item.hasError = true; item.image_url = catsPlaceholders[index % 10]; }"
                     class="news__image" />
 
                 <!-- Заглушка (видно лише коли є помилка) -->

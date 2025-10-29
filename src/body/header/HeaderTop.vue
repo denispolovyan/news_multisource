@@ -42,23 +42,19 @@
 <script setup>
 // base
 import { ref, onMounted, watch } from "vue";
-
 // functions
 import { returnStringifiedTheme } from "@/functions";
-
 // store
 import { themeValueStore } from '@/stores/themeValue';
 import { menuStateStore } from '@/stores/menuState';
 
 // props
-
 const props = defineProps({
   darkTheme: {
     type: String,
     default: null,
   }
 });
-
 
 // store consts
 const themeStore = themeValueStore();
@@ -98,6 +94,7 @@ watch(
 
 // ONMOUNTED
 onMounted(() => {
+  // підтягнути тему і положення світча
   const savedTheme = localStorage.getItem('theme');
 
   if (savedTheme == null) {

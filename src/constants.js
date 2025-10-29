@@ -41,8 +41,8 @@ export const LANGUAGES = [
 ];
 
 // Сервера для запитів
-export const SERVER = [
-   'NewsData', // здоров'я так собі
+export const SERVERS = [
+   'NewsData',
    'GNews', 
    'NewsApi', 
    'TheNewsApi', 
@@ -86,5 +86,7 @@ export const SUPPORT_CREATOR_INFO = "https://send.monobank.ua/jar/2cxtUHyFPK";
 
 // кількість новин на одній сторінці
 export const PAGINATED_NEWS_LENGTH = 4;
+
+export const SEARCH_TYPE_TEXT = ['РОЗШИРЕНИЙ ПОШУК', 'СПРОЩЕНИЙ ПОШУК'];
 
 

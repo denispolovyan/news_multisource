@@ -1,9 +1,9 @@
 <template>
     <!-- Нижня частина -->
     <div class="header__down">
-        <div>
+        <div v-if="simpleSearch != 'true'">
           <select tabindex="1" class="header__server header__button" @change="selectServer($event.target.value)">
-            <option v-for="(serv, index) in SERVER" :key="index" :value="serv">
+            <option v-for="(serv, index) in SERVERS" :key="index" :value="serv">
               {{ serv }}
             </option>
           </select>
@@ -11,7 +11,7 @@
 
         <div>
           <select tabindex="2" v-model="languageValue" class="header__language header__button"
-            @change="selectLanguage($event.target.value)">
+            @change="simpleSearch == 'true' ? simpleSlectLanguage($event.target.value) : selectLanguage($event.target.value)">
             <option v-for="(lang, index) in languagesValues" :key="index" :value="lang">
               {{ lang[1] }}
             </option>
@@ -20,7 +20,7 @@
 
         <div>
           <select tabindex="3" v-model="categoryValue" class="header__category header__button"
-            @change="selectCategory($event.target.value)">
+            @change="simpleSearch == 'true' ? simpleSelectCategory($event.target.value) : selectCategory($event.target.value)">
             <option v-for="(cat, index) in categoriesValues" :key="index" :value="cat">
               {{ cat[1] }}
             </option>
@@ -29,17 +29,24 @@
 
         <div>
           <input tabindex="4" v-model="inputValue" type="text" placeholder="Ключові слова" class="header__button" maxlength="20"
-            @input="selectInput(inputValue)" />
+            @input="simpleSearch == 'true' ? simpleSelectInput(inputValue) : selectInput(inputValue)" />
         </div>
     </div>
 </template>
 
 <script setup>
 // base
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 // constants
-import { CATEGORIES, LANGUAGES, SERVER } from "@/constants.js";
+import { CATEGORIES, LANGUAGES, SERVERS } from "@/constants.js";
+
+// store
+import { simpleSearchStateStore } from '@/stores/simpleSearchState';
+
+// store const
+const simpleSearchStore = simpleSearchStateStore();
+const simpleSearch = ref('true');
 
 // emits
 const emit = defineEmits([
@@ -53,11 +60,11 @@ let categoryValue = ref(CATEGORIES[0]);
 let languageValue = ref(LANGUAGES[0]);
 let inputValue = ref("");
 
-let previousServerValue = ref(SERVER[0]);
+let previousServerValue = ref(SERVERS[0]);
 let languagesValues = ref(LANGUAGES);
 let categoriesValues = ref(CATEGORIES);
 
-// functions
+// встановлюємо існуючі мови та категорії для сервера
 function sortSearchParameters(serv) {
   languagesValues.value = LANGUAGES
   categoriesValues.value = CATEGORIES;
@@ -88,10 +95,7 @@ function sortSearchParameters(serv) {
   }
 }
 
-// Передаємо код категорії у батьківський компонент
-function selectCategory(cat) {
-  emit("categorySelected", cat);
-}
+// ----------------------------------- Розширений пошук ------------------------------
 
 // Передаємо введений текст
 function selectInput(q) {
@@ -110,6 +114,30 @@ function selectServer(serv) {
   previousServerValue.value = serv;
 }
 
+// Передаємо код категорії у батьківський компонент
+function selectCategory(cat) {
+  emit("categorySelected", cat);
+}
+
+// ------------------------ //
+
+// ----------------------------------- Спрощений пошук ------------------------------
+function simpleSelectInput(q) {
+  emit("querySelected", q);
+}
+
+// Передаємо мову
+function simpleSlectLanguage(lang) {
+  emit("languageSelected", lang);
+}
+
+// Передаємо код категорії у батьківський компонент
+function simpleSelectCategory(cat) {
+  emit("categorySelected", cat);
+}
+
+// ------------------------ //
+
 // встановлюємо першу категорію після сортування
 function setSortedCategory() {
   categoryValue.value = categoriesValues.value[0];
@@ -122,9 +150,22 @@ function setSortedLanguage() {
   emit("languageSelected", Object.values(languageValue.value).join(','));
 }
 
+// Watch
+watch(
+  () => simpleSearchStore.simpleSearch,
+  (newVal) => {
+    simpleSearch.value = newVal;
+    sortSearchParameters('NewsData');
+  }
+)
+
 // onMounted
 onMounted(() => {
   setSortedCategory();
+
+  // встановлюємо формат пошуку
+  const simpleSearchSaved = localStorage.getItem('simple-search');
+  if(simpleSearchSaved !== null) simpleSearch.value = simpleSearchSaved;
 });
 </script>
 

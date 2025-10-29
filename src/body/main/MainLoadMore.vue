@@ -1,16 +1,10 @@
 <template>
   <div class="load-more">
-    <button class="load-more__button" @click="loadMore">
+    <button class="load-more__button">
       БІЛЬШЕ НОВИН
     </button>
   </div>
 </template>
-
-<script setup>
-function loadMore() {
-  console.log("Кнопку 'Завантажити більше' натиснуто!");
-}
-</script>
 
 <style scoped>
 @import "@/css/main/loadMore.css";
