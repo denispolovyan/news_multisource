@@ -23,7 +23,6 @@ export const API_BASE_URL_CAT = "https://api.thecatapi.com/v1/images/search?limi
 export const API_KEY_CAT = "live_MzUJAN6JqOy1I0xLEnbwX3qsjRsyzUQbYc5oJkiHiWixiSrBIobVLEdfzikOHU72"
 
 // ------------------------  ПАРАМЕТРИ ПОШУКУ ----------------------
-
 // Доступні категорії
 export const CATEGORIES = [
   ["general", "Всі категорії"], // немає в NEWSDATA
@@ -51,7 +50,6 @@ export const SERVERS = [
 ]
 
 // ------------------------  ІНШІ КОНСТАНТИ ----------------------
-
 // NewsData - GNews - NewsApi - TheNewsApi
 export const QUANTITY_OF_REQUESTS = {
   NewsData: 1,
@@ -72,9 +70,10 @@ export const RESPONSE_DATA_PATH = {
   Currents: 'news'
 };
 
+// Повідомлення що пошук не зробили/ про відсутність новин
 export const UNSUCCESSFUL_SEARCH_MESSAGE = ['Здійсніть пошук новин', 'За вашим запитом не знайдено новин'];
 
-// Інформація для підтримки ЗСУ/ розробника
+// Інформація для підтримки ЗСУ та розробника
 export const DONATION_INFO = {
   // title: 'Тестовий збір',
   // description: "looorem ipsum dolor amenrem iporem ipsum dolor amensum dolor amenorem ipsum dolor amenorem orem ipsum dolor amenioremorem ipsum dolororem ipsum dolor amen amen ipsum dolor amenpsum dolor amenrem ipsorem ipsum dolor amenorem ipsum dolor amenuorem ipsum dolor aorem ipsum dolor amenmenm dolor amen",
@@ -84,9 +83,55 @@ export const DONATION_INFO = {
 // Посилання на банку з можливістю підтримати
 export const SUPPORT_CREATOR_INFO = "https://send.monobank.ua/jar/2cxtUHyFPK";
 
-// кількість новин на одній сторінці
-export const PAGINATED_NEWS_LENGTH = 4;
+// Кількість новин на одній сторінці
+export const PAGINATED_NEWS_LENGTH = 6;
 
+// Відображення типу пошуку в меню
 export const SEARCH_TYPE_TEXT = ['РОЗШИРЕНИЙ ПОШУК', 'СПРОЩЕНИЙ ПОШУК'];
+
+// ------------------------       NOTYF     ----------------------
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+
+export const notyf = new Notyf({
+  duration: 2500,
+  position: {
+    x: 'right',
+    y: 'top',
+  },
+  types: [
+    {
+      type: 'error',
+      background: 'red',
+      duration: 2500,
+      dismissible: true,
+    },
+    {
+      type: 'success',
+      background: 'green',
+      duration: 2500,
+      dismissible: true
+    },
+    {
+      type: 'info',
+      background: 'rgba(255, 140, 0, 1)',
+      duration: 8000,
+      dismissible: true,
+    },
+    {
+      type: 'info-dark',
+      background: '#5050ff',
+      duration: 8000,
+      dismissible: true,
+    },
+    {
+      type: 'load',
+      background: 'rgba(26, 188, 156, 1',
+      duration: 2000,
+      dismissible: true,
+    },
+  ]
+});
+
 
 

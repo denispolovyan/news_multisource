@@ -4,8 +4,6 @@
       <div class="news__container">
         <!-- Кнопка отримання новин -->
         <MainSearch @click="simpleSearch == 'true' ? getSimpleSearchNews() : getNews()" :darkTheme="darkTheme" />
-        <!-- <MainSearch @click="setActualServers" /> -->
-
         <!-- Список новин -->
         <MainNews v-if="news?.length" :news="paginatedNews" :catsPlaceholders="catsPlaceholders"
           :darkTheme="darkTheme" />
@@ -26,9 +24,10 @@ import { ref, watch, onMounted } from "vue";
 // constants
 import { API_KEY_NEWSDATA, API_BASE_URL_NEWSDATA, API_KEY_GNEWS, API_BASE_URL_GNEWS, API_KEY_NEWSAPI, API_BASE_URL_NEWSAPI, API_KEY_THENEWSAPI, API_BASE_URL_THENEWSAPI, API_KEY_WORLDNEWS, API_BASE_URL_WORLDNEWS, API_KEY_CURRENTS, API_BASE_URL_CURRENTS, API_BASE_URL_CAT, API_KEY_CAT } from "@/constants.js";
 import { LANGUAGES, CATEGORIES, SERVERS, QUANTITY_OF_REQUESTS, RESPONSE_DATA_PATH, PAGINATED_NEWS_LENGTH } from "@/constants.js";
+import { notyf } from "@/constants.js";
 
 // functions
-import { returnUrlStr, returnMappedResponse, isParametersDifferent, getSavedData, saveSearchData, getPlaceholderPhoto } from '@/functions.js'
+import { returnUrlStr, returnMappedResponse, isParametersDifferent, getSavedData, saveSearchData, getPlaceholderPhoto, setActualServers, setIsResponseEmpty } from '@/functions.js'
 
 // store
 import { themeValueStore } from '@/stores/themeValue';
@@ -39,10 +38,6 @@ import MainNews from "./MainNews.vue";
 import MainSearch from "./MainSearch.vue";
 import MainEmpty from "./MainEmpty.vue";
 import MainLoadMore from "./MainLoadMore.vue";
-
-// push messages
-import { Notyf } from 'notyf';
-import 'notyf/notyf.min.css';
 
 // props
 const props = defineProps({
@@ -98,99 +93,24 @@ const simpleSearch = ref('true')
 const simpleSearchServers = ref(SERVERS);
 
 // чи відповідь від сервера пуста
-let isResponseEmpty = false;
+let isResponseEmpty = ref(false);
 
 // Набитий масив з котиків-плейсхолдерів
 const catsPlaceholders = ref([]);
 
-// Пуш повідомлення
-const notyf = new Notyf({
-  duration: 2500,
-  position: {
-    x: 'right',
-    y: 'top',
-  },
-  types: [
-    {
-      type: 'error',
-      background: 'red',
-      duration: 2500,
-      dismissible: true,
-    },
-    {
-      type: 'success',
-      background: 'green',
-      duration: 2500,
-      dismissible: true
-    },
-    {
-      type: 'info',
-      background: 'rgba(255, 140, 0, 1)',
-      duration: 8000,
-      dismissible: true,
-    },
-    {
-      type: 'info-dark',
-      background: '#5050ff',
-      duration: 8000,
-      dismissible: true,
-    }
-  ]
-});
-
-// Watch
-watch(
-  () => themeStore.theme,
-  (newVal) => {
-    darkTheme.value = newVal;
-  }
-)
-
-watch(
-  () => props.category,
-  (newVal) => {
-    CATEGORY.value = newVal;
-    detalizedCategory = CATEGORY._value.split(",");
-  },
-);
-
-watch(
-  () => props.query,
-  (newVal) => {
-    QUERY.value = newVal;
-  },
-);
-
-watch(
-  () => props.language,
-  (newVal) => {
-    LANGUAGE.value = newVal;
-    detalizedLanguage = LANGUAGE.value.split(",");
-  },
-);
-
-watch(
-  () => props.server,
-  (newVal) => {
-    SERVER.value = newVal;
-    if (newVal != 'GNews') {
-      setActualParams();
-    }
-  },
-);
-
-watch(
-  () => simpleSearchStore.simpleSearch,
-  (newVal) => {
-    simpleSearch.value = newVal;
-  }
-)
-
 // Отримання новин розширеним пошуком
 async function getNews() {
   let url = "";
+  viewedAllNews.value = 'false';
+
+  // виводимо пуш пошуку
+  notyf.open({
+        type: 'load',
+        message: `Пошук новин ...`
+  });
+
   setActualParams();
-  console.log(detalizedLanguage.value);
+
   // отримання url для запиту
   switch (SERVER.value) {
     case "NewsData":
@@ -211,7 +131,7 @@ async function getNews() {
       break;
     case "WorldNews":
       const worldNewsApiUrl = `${API_BASE_URL_WORLDNEWS}${API_KEY_WORLDNEWS}`
-      url = returnUrlStr(worldNewsApiUrl, 'WorldNews', detalizedCategor.valuey, detalizedLanguage.value, QUERY);
+      url = returnUrlStr(worldNewsApiUrl, 'WorldNews', detalizedCategory.value, detalizedLanguage.value, QUERY);
       break;
     case "Currents":
       const CurrentsUrl = `${API_BASE_URL_CURRENTS}${API_KEY_CURRENTS}`
@@ -268,7 +188,7 @@ async function getNews() {
     increaseNewsQuantity();
     saveSearchData(detalizedCategory.value, QUERY.value, detalizedLanguage.value, SERVER.value, news.value);
 
-    setIsResponseEmpty();
+    isResponseEmpty.value = setIsResponseEmpty(news);
   } catch (error) {
     console.error("Помилка при отриманні даних:", error);
     return [];
@@ -279,9 +199,19 @@ async function getNews() {
 async function getSimpleSearchNews() {
   let url = "";
   news.value = [];
+
+    // виводимо пуш пошуку
+  notyf.open({
+        type: 'load',
+        message: `Пошук новин ...`,
+        duration: 4000
+  });
+
+
+  viewedAllNews.value = 'false';
   // set servers for cycle and params for search
   setActualParams();
-  setActualServers();
+  simpleSearchServers.value = setActualServers(SERVERS, detalizedCategory.value, detalizedLanguage.value);
   // set amount of news loaded (+4)
   newsCounter.value = 0;
   paginatedNews.value = [];
@@ -354,27 +284,16 @@ async function getSimpleSearchNews() {
   news.value.length ? notyf.success('Успішний пошук') : notyf.error('Новини не знайдені');
   increaseNewsQuantity();
   saveSearchData(detalizedCategory.value, QUERY.value, detalizedLanguage.value, 'спрощений пошук', news.value);
-  setIsResponseEmpty();
+  isResponseEmpty.value = setIsResponseEmpty();
 } catch (error) {
   console.error("Помилка при отриманні даних:", error);
   return [];
 }}
 
-
 // актуалізувати параметри пошуку
 function setActualParams() {
   detalizedLanguage.value = LANGUAGE.value.split(",");
   detalizedCategory.value = CATEGORY.value.split(",");
-}
-
-// встановлюємо чи була відповідь від сервера після запиту
-function setIsResponseEmpty() {
-  if (news.value && news.value.length) {
-    isResponseEmpty = false;
-  } else {
-    isResponseEmpty = true;
-    news.value = [];
-  }
 }
 
 // шукаємо новини по enter
@@ -387,7 +306,6 @@ function handleEnter(event) {
 // наповнюємо масив новин при натисканні на Більше новин
 function increaseNewsQuantity() {
   if (news.value.length) {
-    console.log( newsCounter.value + PAGINATED_NEWS_LENGTH,newsCounter.value, PAGINATED_NEWS_LENGTH)
     newsCounter.value = Number(newsCounter.value) + PAGINATED_NEWS_LENGTH;
 
     if (newsCounter.value >= news.value.length) {
@@ -407,28 +325,55 @@ function increaseNewsQuantity() {
   }
 }
 
-// встановлюємо актуальні сервери 
-function setActualServers() {
-  setActualParams();
-  simpleSearchServers.value = SERVERS;
-
-  if (detalizedLanguage.value[0] == 'uk') {
-    simpleSearchServers.value = simpleSearchServers.value.filter(s => !['NewsApi', 'Currents'].includes(s));
+// Watch
+watch(
+  () => themeStore.theme,
+  (newVal) => {
+    darkTheme.value = newVal;
   }
+)
 
-  switch (detalizedCategory.value[0]) {
-    case 'politics':
-      simpleSearchServers.value = simpleSearchServers.value.filter(s => !['GNews', 'NewsApi', 'TheNewsApi'].includes(s));
-      break
-    case 'science':
-    case 'business':
-    case 'health':
-      simpleSearchServers.value = simpleSearchServers.value.filter(s => !['WorldNews'].includes(s))
-      break
+watch(
+  () => props.category,
+  (newVal) => {
+    CATEGORY.value = newVal;
+    detalizedCategory = CATEGORY._value.split(",");
+  },
+);
+
+watch(
+  () => props.query,
+  (newVal) => {
+    QUERY.value = newVal;
+  },
+);
+
+watch(
+  () => props.language,
+  (newVal) => {
+    LANGUAGE.value = newVal;
+    detalizedLanguage = LANGUAGE.value.split(",");
+  },
+);
+
+watch(
+  () => props.server,
+  (newVal) => {
+    SERVER.value = newVal;
+    if (newVal != 'GNews') {
+      setActualParams();
+    }
+  },
+);
+
+watch(
+  () => simpleSearchStore.simpleSearch,
+  (newVal) => {
+    simpleSearch.value = newVal;
   }
-}
+)
 
-// ONMOUNTED
+// onmounted
 onMounted(() => {
   catsPlaceholders.value = JSON.parse(localStorage.getItem('cat-placeholders'));
 

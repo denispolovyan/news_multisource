@@ -216,6 +216,42 @@ export async function getPlaceholderPhoto(base_url, api_key) {
   }
 }
 
+// повертає сервери по яким здійснюється пошук
+export function setActualServers(SERVERS, detalizedCategory, detalizedLanguage) {
+  let simpleSearchServers = SERVERS;
+
+  if (detalizedLanguage[0] == 'uk') {
+    simpleSearchServers = simpleSearchServers.filter(s => !['NewsApi', 'Currents'].includes(s));
+  }
+
+  switch (detalizedCategory[0]) {
+    case 'politics':
+      simpleSearchServers = simpleSearchServers.filter(s => !['GNews', 'NewsApi', 'TheNewsApi'].includes(s));
+      break
+    case 'science':
+    case 'business':
+    case 'health':
+      simpleSearchServers = simpleSearchServers.filter(s => !['WorldNews'].includes(s))
+      break
+  }
+
+  return simpleSearchServers;
+}
+
+// встановлюємо чи була відповідь від сервера після запиту
+export function setIsResponseEmpty(news) {
+  let isResponseEmpty = '';
+
+  if (news.value && news.value.length) {
+    isResponseEmpty = false;
+  } else {
+    isResponseEmpty = true;
+    // news.value = [];
+  }
+
+  return isResponseEmpty;
+}
+
 // --------------------- HEADER FUNCTIONS ----------------------
 
 // повертає значення інпуту строкою
