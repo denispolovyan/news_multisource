@@ -59,7 +59,7 @@
   cursor: default;
   position: relative;
   background: linear-gradient(90deg, #ea6228, #ffd700, #a926c3, #0066ff);
-  background-size: 300% 300%;
+  background-size: 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gradientFlow 8s ease infinite;
