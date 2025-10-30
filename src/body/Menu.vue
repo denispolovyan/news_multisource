@@ -3,9 +3,10 @@
     <div class="menu-overlay">
       <div class="menu-panel">
         <nav class="menu-links">
-          <a @click="openDonate()">ПІДТРИМАТИ</a>
           <a @click="setSimpleSearch()">{{ (simpleSearch == 'true') ? SEARCH_TYPE_TEXT[0] : SEARCH_TYPE_TEXT[1] }}</a>
+          <a @click="openDonate()">ПІДТРИМАТИ</a>
           <a @click="closeMenu()">НА ГОЛОВНУ</a>
+          <a @click="shareSite()">ПОДІЛИТИСЬ</a>
         </nav>
       </div>
     </div>
@@ -31,7 +32,6 @@ const menuStore = menuStateStore();
 // const
 const simpleSearch = ref('true');
 
-
 // open donate window
 function openDonate() {
   donateStore.setDonateState(true);
@@ -44,8 +44,8 @@ function setSimpleSearch() {
     simpleSearchStore.setSimpleSearchState('false');
     localStorage.setItem('simple-search', 'false');
   }
-  else { 
-    simpleSearchStore.setSimpleSearchState('true'); 
+  else {
+    simpleSearchStore.setSimpleSearchState('true');
     localStorage.setItem('simple-search', 'true');
   }
 
@@ -55,6 +55,18 @@ function setSimpleSearch() {
 // close menu
 function closeMenu() {
   menuStore.setMenuState(false);
+}
+
+// поділитись сайтом
+function shareSite() {
+  const shareData = {
+    text: 'Спробуй віджет, що збирає новини з різних джерел - https://denispolovyan.github.io/news_multisource/',
+  }
+
+  navigator.share(shareData)
+    .catch((err) => {
+      console.error('Помилка кнопки поділитись:', err)
+    })
 }
 
 // watch
@@ -69,8 +81,8 @@ watch(
 onMounted(() => {
   // set simple serch state
   simpleSearch.value = localStorage.getItem('simple-search');
-  if (simpleSearch.value !== null){
-    simpleSearchStore.setSimpleSearchState(simpleSearch.value); 
+  if (simpleSearch.value !== null) {
+    simpleSearchStore.setSimpleSearchState(simpleSearch.value);
   } else {
     simpleSearch.value = 'true';
   }
