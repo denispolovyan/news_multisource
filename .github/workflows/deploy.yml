@@ -1,35 +1,40 @@
-name: Build and Deploy Vue App to GitHub Pages
+name: Deploy Vue App to GitHub Pages
 
 on:
   push:
     branches:
-      - main   # тригер при пуші в main
+      - main  # 👈 деплой при пуші у main (зміни за потреби)
+
+permissions:
+  contents: write  # 👈 дає права GitHub Actions на пуш у gh-pages
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Клонуємо репозиторій
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      # 2️⃣ Встановлюємо Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: 18  # або 20, якщо твій проєкт підтримує
 
+      # 3️⃣ Встановлюємо залежності
       - name: Install dependencies
         run: npm ci
 
+      # 4️⃣ Збираємо проєкт
       - name: Build project
         run: npm run build
 
-      - name: Add SPA fallback (404 -> index)
-        run: cp dist/index.html dist/404.html
-
+      # 5️⃣ Деплой на GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./dist   # 👈 для Vite або Vue CLI
+          commit_message: "🚀 Deploy from GitHub Actions"
