@@ -80,6 +80,11 @@ let detalizedCategory = ref(CATEGORIES[0]);
 // Минулий юрл пошуку
 let previousUrl = ref('');
 
+let previousCategory = ref('');
+let previousQuery = ref('');
+let previousLanguage = ref('');
+
+
 // Набитий масив новин
 const news = ref([]);
 
@@ -102,12 +107,6 @@ const catsPlaceholders = ref([]);
 async function getNews() {
   let url = "";
   viewedAllNews.value = 'true';
-
-  // виводимо пуш пошуку
-  notyf.open({
-        type: 'load',
-        message: `Пошук новин ...`
-  });
 
   setActualParams();
 
@@ -144,6 +143,12 @@ async function getNews() {
     notyf.error('Оновіть параметри');
     return;
   } else {
+    // виводимо пуш пошуку
+    notyf.open({
+      type: 'load',
+      message: `Пошук новин ...`
+    });
+
     previousUrl.value = url;
 
     newsCounter.value = 0;
@@ -188,7 +193,7 @@ async function getNews() {
     increaseNewsQuantity();
     saveSearchData(detalizedCategory.value, QUERY.value, detalizedLanguage.value, SERVER.value, news.value);
 
-    isResponseEmpty.value = setIsResponseEmpty(news);
+    isResponseEmpty.value = setIsResponseEmpty(news.value);
   } catch (error) {
     console.error("Помилка при отриманні даних:", error);
     return [];
@@ -200,19 +205,27 @@ async function getSimpleSearchNews() {
   let url = "";
   news.value = [];
 
-    // виводимо пуш пошуку
-  notyf.open({
-        type: 'load',
-        message: `Пошук новин ...`,
-        duration: 4000
-  });
+  // виводимо пуш пошуку
+  if ((previousCategory.value == detalizedCategory.value) && (previousQuery.value == QUERY.value) && (previousLanguage.value == detalizedLanguage.value)) {
+    notyf.error('Оновіть параметри');
+    return;
+  } else {
+    setPreviousParams();
+    notyf.open({
+      type: 'load',
+      message: `Пошук новин ...`,
+      duration: 4000
+    });
+  }
 
-
+  // приїовуємо кнопку завантажити ще перед пошуком
   viewedAllNews.value = 'true';
+
   // set servers for cycle and params for search
   setActualParams();
   simpleSearchServers.value = setActualServers(SERVERS, detalizedCategory.value, detalizedLanguage.value);
-  // set amount of news loaded (+4)
+
+  // set amount of news loaded (+6)
   newsCounter.value = 0;
   paginatedNews.value = [];
 
@@ -251,49 +264,51 @@ async function getSimpleSearchNews() {
       let response = '';
       let data = '';
 
-    // робимо необхідну кількість запитів, з якої формуємо результат
-    switch (simpleServer) {
-      case 'TheNewsApi':
-        requests = Array.from({ length: QUANTITY_OF_REQUESTS[simpleServer] }, (_, i) =>
-          fetch(`${url}&page=${i + 1}`)
-        );
-        response = await Promise.all((await Promise.all(requests)).map(r => r.json()));
-        data = { ...response[0], data: [...response[0].data] };
+      // робимо необхідну кількість запитів, з якої формуємо результат
+      switch (simpleServer) {
+        case 'TheNewsApi':
+          requests = Array.from({ length: QUANTITY_OF_REQUESTS[simpleServer] }, (_, i) =>
+            fetch(`${url}&page=${i + 1}`)
+          );
+          response = await Promise.all((await Promise.all(requests)).map(r => r.json()));
+          data = { ...response[0], data: [...response[0].data] };
 
-        // Додаємо всі елементи data з інших об'єктів
-        for (let i = 1; i < response.length; i++) {
-          if (response[i].data && Array.isArray(response[i].data)) {
-            data.data.push(...response[i].data);
+          // Додаємо всі елементи data з інших об'єктів
+          for (let i = 1; i < response.length; i++) {
+            if (response[i].data && Array.isArray(response[i].data)) {
+              data.data.push(...response[i].data);
+            }
           }
-        }
-        break;
-      default:
-        response = await fetch(url);
-        data = await response.json();
-        break;
+          break;
+        default:
+          response = await fetch(url);
+          data = await response.json();
+          break;
+      }
+
+      news.value.push(
+        ...returnMappedResponse(data[RESPONSE_DATA_PATH[simpleServer]], simpleServer)
+      );
     }
 
-    news.value.push(
-      ...returnMappedResponse(data[RESPONSE_DATA_PATH[simpleServer]], simpleServer)
-    );
-  }
-  
-  catsPlaceholders.value = await getPlaceholderPhoto(API_BASE_URL_CAT, API_KEY_CAT);
-  if (catsPlaceholders.value) localStorage.setItem('cat-placeholders', JSON.stringify(catsPlaceholders.value));
+    catsPlaceholders.value = await getPlaceholderPhoto(API_BASE_URL_CAT, API_KEY_CAT);
+    if (catsPlaceholders.value) localStorage.setItem('cat-placeholders', JSON.stringify(catsPlaceholders.value));
+    news.value.length ? notyf.success('Успішний пошук') : notyf.error('Новини не знайдені');
+    increaseNewsQuantity();
+    saveSearchData(detalizedCategory.value, QUERY.value, detalizedLanguage.value, 'спрощений пошук', news.value);
+    isResponseEmpty.value = setIsResponseEmpty();
 
-  news.value.length ? notyf.success('Успішний пошук') : notyf.error('Новини не знайдені');
-  increaseNewsQuantity();
-  saveSearchData(detalizedCategory.value, QUERY.value, detalizedLanguage.value, 'спрощений пошук', news.value);
-  isResponseEmpty.value = setIsResponseEmpty();
-} catch (error) {
-  console.error("Помилка при отриманні даних:", error);
-  return [];
-}}
+  } catch (error) {
+    console.error("Помилка при отриманні даних:", error);
+    return [];
+  }
+}
 
 // актуалізувати параметри пошуку
 function setActualParams() {
   detalizedLanguage.value = LANGUAGE.value.split(",");
   detalizedCategory.value = CATEGORY.value.split(",");
+
 }
 
 // шукаємо новини по enter
@@ -323,6 +338,12 @@ function increaseNewsQuantity() {
 
     localStorage.setItem('viewed-all-news', viewedAllNews.value);
   }
+}
+
+function setPreviousParams() {
+  previousQuery.value = QUERY.value;
+  previousLanguage.value = LANGUAGE.value;
+  previousCategory.value = CATEGORY.value;
 }
 
 // Watch

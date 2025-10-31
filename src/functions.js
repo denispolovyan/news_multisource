@@ -242,11 +242,10 @@ export function setActualServers(SERVERS, detalizedCategory, detalizedLanguage) 
 export function setIsResponseEmpty(news) {
   let isResponseEmpty = '';
 
-  if (news.value && news.value.length) {
+  if (news && news.length) {
     isResponseEmpty = false;
   } else {
     isResponseEmpty = true;
-    // news.value = [];
   }
 
   return isResponseEmpty;
