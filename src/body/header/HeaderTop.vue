@@ -102,6 +102,7 @@ onMounted(() => {
   } else {
     darkThemeSwitch.value = (savedTheme === 'true') ? true : false;
     themeStore.setTheme(savedTheme);
+    
   }
 });
 </script>

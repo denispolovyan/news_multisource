@@ -60,7 +60,7 @@ function closeMenu() {
 // поділитись сайтом
 function shareSite() {
   const shareData = {
-    text: 'Спробуй віджет, що збирає новини з різних джерел - https://denispolovyan.github.io/news_multisource/',
+    text: 'Спробуй віджет, що збирає новини з різних джерел - newsbag.space',
   }
 
   navigator.share(shareData)

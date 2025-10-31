@@ -101,7 +101,7 @@ const catsPlaceholders = ref([]);
 // Отримання новин розширеним пошуком
 async function getNews() {
   let url = "";
-  viewedAllNews.value = 'false';
+  viewedAllNews.value = 'true';
 
   // виводимо пуш пошуку
   notyf.open({
@@ -208,7 +208,7 @@ async function getSimpleSearchNews() {
   });
 
 
-  viewedAllNews.value = 'false';
+  viewedAllNews.value = 'true';
   // set servers for cycle and params for search
   setActualParams();
   simpleSearchServers.value = setActualServers(SERVERS, detalizedCategory.value, detalizedLanguage.value);
