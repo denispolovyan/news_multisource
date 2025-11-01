@@ -81,6 +81,7 @@ watch(
 onMounted(() => {
   // set simple serch state
   simpleSearch.value = localStorage.getItem('simple-search');
+  
   if (simpleSearch.value !== null) {
     simpleSearchStore.setSimpleSearchState(simpleSearch.value);
   } else {

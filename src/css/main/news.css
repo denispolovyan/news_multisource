@@ -69,7 +69,7 @@
   padding: 0.3rem 0.6rem;
   border-radius: 5px;
   backdrop-filter: blur(5px);
-  max-width: 60%;
+  max-width: 90%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;

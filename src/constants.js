@@ -130,6 +130,12 @@ export const notyf = new Notyf({
       duration: 2000,
       dismissible: true,
     },
+    {
+      type: 'alert',
+      background: '#ff7f50	',
+      duration: 2000,
+      dismissible: true,
+    }
   ]
 });
 

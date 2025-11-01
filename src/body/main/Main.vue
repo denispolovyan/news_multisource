@@ -94,7 +94,7 @@ let paginatedNews = ref([]);
 let newsCounter = ref(0);
 
 const simpleSearchStore = simpleSearchStateStore();
-const simpleSearch = ref('true')
+const simpleSearch = ref('true');
 const simpleSearchServers = ref(SERVERS);
 
 // чи відповідь від сервера пуста
@@ -203,13 +203,13 @@ async function getNews() {
 // Отримання новин спрощеним пошуком
 async function getSimpleSearchNews() {
   let url = "";
-  news.value = [];
 
-  // виводимо пуш пошуку
+  // виводимо пуш пошуку та робимо підготовку до набиття масиву
   if ((previousCategory.value == detalizedCategory.value) && (previousQuery.value == QUERY.value) && (previousLanguage.value == detalizedLanguage.value)) {
     notyf.error('Оновіть параметри');
     return;
   } else {
+    news.value = [];
     setPreviousParams();
     notyf.open({
       type: 'load',
@@ -340,10 +340,19 @@ function increaseNewsQuantity() {
   }
 }
 
+// зберігаємо минулі параметри пошуку
 function setPreviousParams() {
   previousQuery.value = QUERY.value;
   previousLanguage.value = LANGUAGE.value;
   previousCategory.value = CATEGORY.value;
+}
+
+// скидаємо параметри
+function resetSearchParams() {
+  detalizedCategory.value = '-';
+  detalizedLanguage.value = '-';
+  QUERY.value = '';
+  SERVER.value = 'NewsData';
 }
 
 // Watch
@@ -390,7 +399,14 @@ watch(
 watch(
   () => simpleSearchStore.simpleSearch,
   (newVal) => {
+    if (newVal != simpleSearch.value) {
+      notyf.open({
+        type: 'alert',
+        message: `Встановлено ${((newVal == 'true') ? 'простий' : 'розширений')} пошук`
+      });
+    }
     simpleSearch.value = newVal;
+    resetSearchParams();
   }
 )
 
@@ -427,7 +443,8 @@ onMounted(() => {
   window.addEventListener('keydown', handleEnter);
 
   // встановити простий пошук
-  simpleSearch.value = localStorage.getItem('simple-search');
+  simpleSearch.value = localStorage.getItem('simple-search') || 'true';
+  
 });
 
 </script>

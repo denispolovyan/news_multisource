@@ -1,5 +1,4 @@
 // --------------------- MAIN FUNCTIONS ----------------------
-
 // встановлює кукі
 export function setCookie(name, value, minutes) {
   const date = new Date();
@@ -252,7 +251,6 @@ export function setIsResponseEmpty(news) {
 }
 
 // --------------------- HEADER FUNCTIONS ----------------------
-
 // повертає значення інпуту строкою
 export function returnStringifiedTheme(booleanString){
   if(booleanString === true) return'true'
